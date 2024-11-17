@@ -10,7 +10,7 @@ export default {
     <div class="header-container">
       <!-- Logo Section -->
       <RouterLink to="/" class="logo">
-        <img src="@/assets/home-scout-logo-green.png" alt="Home Scout" />
+        <img src="@/assets/home-scout-logo-green.png" alt="Home Scout" width=150 />
       </RouterLink>
       <!-- Navigation Menu -->
       <nav class="nav-menu">
@@ -33,13 +33,10 @@ export default {
 
 <style scoped>
 .header {
-  position: fixed;
-  top: 0;
   background-color: #f5f5f5;
   padding: 1rem 0;
   width: 100%;
-  height: 108px;
-  color: #66b56b
+  color: #66b56b;
 }
 
 .header-container {

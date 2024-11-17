@@ -21,7 +21,8 @@ const emit = defineEmits(['send-message'])
 const messageList = ref([...props.messages])
 
 // Watch for changes in props.messages
-watch(() => props.messages, (newMessages) => {
+watch(() => props.messages, 
+  (newMessages) => {
   messageList.value = [...newMessages]
   nextTick(() => {
     scrollToBottom()
