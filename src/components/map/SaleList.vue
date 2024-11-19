@@ -3,21 +3,31 @@ import { ref, watch, computed } from 'vue';
 import { useUserStore } from '@/stores/user';
 import { useErrorStore } from '@/stores/error';
 import { registerWishSale, removeWishSale } from '@/api/map';
+import SaleRegisterModal from '@/components/map/SaleRegisterModal.vue';
 
 const userStore = useUserStore();
 const errorStore = useErrorStore();
 const properties = ref([]);
+
+const showRegisterModal = ref(false);
 
 // 모달 관련 상태
 const showConfirmModal = ref(false);
 const showSuccessModal = ref(false);
 const selectedSaleId = ref(null);
 
+const successModalText = ref(null);
+
 const props = defineProps({
   saleListProps: {
     type: Array
+  },
+  aptIdProps: {
+    type: String
   }
 })
+
+const emit = defineEmits(["refresh"])
 
 watch(
   () => props.saleListProps,
@@ -53,16 +63,18 @@ const handleWishToggle = async (saleId, currentWishState) => {
 
 // 위시리스트 추가
 const addToWishlist = async (saleId) => {
-    registerWishSale(
-      saleId,
-      () => {
-        updateLocalWishState(saleId, true);
-        showSuccessModal.value = true; // 성공 모달 표시
-      },
-      (err) => {
-        errorStore.showError(err.response.data.message || '위시리스트 추가 중 오류가 발생했습니다.');
-      }
-    )
+  console.log(props.aptIdProps);
+  registerWishSale(
+    saleId,
+    () => {
+      updateLocalWishState(saleId, true);
+      showSuccessModal.value = true; // 성공 모달 표시
+      successModalText.value = '관심 목록에 추가되었습니다.'
+    },
+    (err) => {
+      errorStore.showError(err.response.data.message || '위시리스트 추가 중 오류가 발생했습니다.');
+    }
+  )
     
 };
 
@@ -112,10 +124,29 @@ const getPrice = (type, price, deposit, rentalFee) => {
 
 const closeSuccessModal = () => {
   showSuccessModal.value = false;
+  if(successModalText.value === '매물이 등록되었습니다.') {
+    emit("refresh")
+  }
 };
+
+// 매물 등록 성공 시 처리
+const handleRegisterSuccess = () => {
+  // 부모 컴포넌트에 이벤트 emit하여 매물 목록 새로고침 등의 처리
+  showSuccessModal.value = true; // 성공 모달 표시
+  successModalText.value = '매물이 등록되었습니다.'
+}
 </script>
 
 <template>
+  <!-- 매물 등록 모달 -->
+  <SaleRegisterModal
+    v-if="showRegisterModal"
+    :show-modal="showRegisterModal"
+    :apt-id-props="aptIdProps"
+    @close="showRegisterModal = false"
+    @register-success="handleRegisterSuccess"
+  />
+
   <!-- Success Modal -->
   <Transition name="modal">
     <div v-if="showSuccessModal" class="modal-overlay" @click="closeSuccessModal">
@@ -126,7 +157,7 @@ const closeSuccessModal = () => {
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"></path>
             </svg>
           </div>
-          <p class="success-message">관심 목록에 추가되었습니다.</p>
+          <p class="success-message">{{ successModalText }}</p>
           <button 
             class="modal-button confirm-button" 
             @click="closeSuccessModal"
@@ -166,7 +197,7 @@ const closeSuccessModal = () => {
 
   <div class="sale-header">
     <h2>이 단지 매물</h2>
-    <button v-if="userStore.role === '공인중개사'" class="register-button">
+    <button v-if="userStore.role === '공인중개사'" class="register-button" @click="showRegisterModal = true">
       매물 등록
     </button>
   </div>
@@ -187,7 +218,7 @@ const closeSuccessModal = () => {
         </svg>
       </div>
       <p class="empty-state-text">{{ emptyStateMessage }}</p>
-      <button v-if="userStore.role === '공인중개사'" class="empty-state-button">
+      <button v-if="userStore.role === '공인중개사'" class="empty-state-button" @click="showRegisterModal = true">
         매물 등록하기
       </button>
     </div>
@@ -222,9 +253,9 @@ const closeSuccessModal = () => {
       <div class="property-info">
         <p>{{ property.dong }}동 {{ property.floor }}층 {{ property.area }}㎡</p>
         <div class="tags">
-          <span class="tag">#{{ property.tag1 }}</span>
-          <span class="tag">#{{ property.tag2 }}</span>
-          <span class="tag">#{{ property.tag3 }}</span>
+          <span class="tag" v-if="property.tag1.length !== 0">#{{ property.tag1 }}</span>
+          <span class="tag" v-if="property.tag2.length !== 0">#{{ property.tag2 }}</span>
+          <span class="tag" v-if="property.tag3.length !== 0">#{{ property.tag3 }}</span>
         </div>
       </div>
 
@@ -303,6 +334,7 @@ const closeSuccessModal = () => {
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 16px;
+  padding-top: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
@@ -310,7 +342,7 @@ const closeSuccessModal = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 0px;
 }
 
 .price {
@@ -327,13 +359,17 @@ const closeSuccessModal = () => {
 }
 
 .property-info {
-  margin-bottom: 12px;
+  margin-bottom: 6px;
+}
+
+.property-info p {
+  margin-bottom: 8px;
 }
 
 .tags {
   display: flex;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 0px;
 }
 
 .tag {
@@ -553,7 +589,7 @@ const closeSuccessModal = () => {
 
 /* 모달 트랜지션 개선 */
 .modal-enter-active {
-  transition: all 0.3s ease-out;
+  transition: all 0.2s ease-out;
 }
 
 .modal-leave-active {
@@ -562,11 +598,11 @@ const closeSuccessModal = () => {
 
 .modal-enter-from {
   opacity: 0;
-  transform: translateY(20px) scale(0.95);
+  transform: translateY(10px) scale(0.99);
 }
 
 .modal-leave-to {
   opacity: 0;
-  transform: translateY(20px) scale(0.95);
+  transform: translateY(10px) scale(0.99);
 }
 </style>

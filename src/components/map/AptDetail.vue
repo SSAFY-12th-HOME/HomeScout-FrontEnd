@@ -16,37 +16,48 @@ const props = defineProps({
 const apt = ref('');
 const aptInfo = ref({});
 
+// getAptInfo를 별도의 함수로 분리
+const fetchAptInfo = () => {
+    if (!apt.value) return;
+    
+    getAptInfo(
+        apt.value,
+        ({ data }) => {
+            aptInfo.value = data;
+        },
+        (err) => {
+            console.log(err);
+        }
+    );
+};
+
 watch(
     () => props.aptId,
     (newApt) => {
         apt.value = newApt;
-        getAptInfo(
-            apt.value,
-            ({ data }) => {
-                aptInfo.value = data;
-            },
-            (err) => {
-                console.log(err);
-            }
-        )
+        fetchAptInfo(); // 분리된 함수 호출
     },
-)
+);
+
+// refresh 핸들러를 fetchAptInfo 함수를 호출하도록 수정
+const handleRefresh = () => {
+    fetchAptInfo();
+};
 </script>
 
 <template>
     <div class="container">
         <h2 v-if="apt.length === 0" class="empty-message">아파트를 선택해 주세요!</h2>
         <div v-else class="apt-container">
-            <div class="divider"></div>
             <AptInfo :apt-info="aptInfo.aptInfo"/>
             <div class="divider"></div>
             <DealHistory :deal-history-props="aptInfo.dealHistory" />
             <div class="divider"></div>
             <SubwayInfo :subway-list-props="aptInfo.subway"/>
             <div class="divider"></div>
-            <SaleList :sale-list-props="aptInfo.sale"/>
+            <SaleList :sale-list-props="aptInfo.sale" :apt-id-props="aptInfo.aptId" @refresh="handleRefresh"/>
             <div class="divider"></div>
-            <LifeStory :life-story-props="aptInfo.lifeStory"/>
+            <LifeStory :life-story-props="aptInfo.lifeStory" :apt-id-props="aptInfo.aptId" @refresh="handleRefresh"/>
         </div>
     </div>
 </template>
@@ -90,7 +101,7 @@ watch(
 
 .divider {
     height: 10px;
-    background-color: rgb(236, 236, 236);
+    background-color: #ececec;
 }
 
 .empty-message {

@@ -48,7 +48,25 @@ async function removeWishSale(saleId, success, fail) {
 	await local.delete(`/sale/${saleId}/wish`).then(success).catch(fail);
 }
 
+// 매물 등록
+async function registerSale(payload, success, fail) {
+	local.defaults.headers["Authorization"] = getTokenHeader()
+	await local.post(`/sale`, payload).then(success).catch(fail);
+}
+
+// 살아본 이야기 등록
+async function registerLifeStory(aptId, payload, success, fail) {
+	local.defaults.headers["Authorization"] = getTokenHeader()
+	await local.post(`/apt/${aptId}/story`, payload).then(success).catch(fail);
+}
+
+// 살아본 이야기 삭제
+async function deleteLifeStory(aptId, storyId, success, fail) {
+	local.defaults.headers["Authorization"] = getTokenHeader()
+	await local.delete(`/apt/${aptId}/story/${storyId}`).then(success).catch(fail);
+}
+
 export { 
 	getAptList, listSido, listGugun, getAptInfo, getAptIdByAptName, registerWishSale,
-	removeWishSale
+	removeWishSale, registerSale, registerLifeStory, deleteLifeStory
  };

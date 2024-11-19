@@ -1,4 +1,3 @@
-
 <script setup>
 import { ref, watch } from 'vue';
 
@@ -22,7 +21,7 @@ watch(
 <template>
   <div class="apt-info-container">
     <h2>{{ apt.aptNm }}</h2>
-    <p>{{ apt.address }}</p>
+    <p class="address">{{ apt.address }}</p>
     <table>
 			<tbody>
 				<tr>
@@ -39,25 +38,25 @@ watch(
 			<tbody>
 				<tr>
 					<th>용적률(%)</th>
-					<td>{{ apt.far }}</td>
+					<td>{{ apt.far }}%</td>
 				</tr>
 			</tbody>
 			<tbody>
 				<tr>
 					<th>건폐율(%)</th>
-					<td>{{ apt.bcr }}</td>
+					<td>{{ apt.bcr }}%</td>
 				</tr>
 			</tbody>
 			<tbody>
 				<tr>
 					<th>최고층</th>
-					<td>{{ apt.flrCnt }}</td>
+					<td>{{ apt.flrCnt }}층</td>
 				</tr>
 			</tbody>
 			<tbody>
 				<tr>
 					<th>세대수</th>
-					<td>{{ apt.homeCnt }}</td>
+					<td>{{ apt.homeCnt }}세대</td>
 				</tr>
 			</tbody>
     </table>
@@ -66,34 +65,66 @@ watch(
 
 <style scoped>
 .apt-info-container {
-  font-family: Arial, sans-serif;
-  margin: 20px;
+  font-family: 'Pretendard', sans-serif;
+  max-width: 600px;
+  margin: 0px auto;
+  padding: 20px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
 }
 
 h2 {
-  font-size: 1.5em;
-  margin-bottom: 10px;
+  font-size: 1.8em;
+  color: #333;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.address {
+  color: #666;
+  margin-bottom: 20px;
+  font-size: 0.95em;
 }
 
 table {
   width: 100%;
-  border-collapse: collapse;
-  overflow: hidden; /* 테두리 둥근 효과를 유지하기 위한 설정 */
-  border: 2px solid black;
-  border-radius: 10px; /* 테두리를 둥글게 만듦 */
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 th, td {
+  padding: 12px 12px;
   text-align: left;
-  padding: 8px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 th {
-  background-color: #f9f9f9;
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+  width: 35%;
 }
 
+td {
+  color: #333;
+}
+
+tr:last-child th,
 tr:last-child td {
-  border-bottom: none; /* 마지막 행의 하단 테두리 제거 */
+  border-bottom: none;
+}
+
+tr:hover {
+  background-color: #f8f9fa;
+  transition: background-color 0.2s ease;
+}
+
+tbody:not(:last-child) tr:last-child th,
+tbody:not(:last-child) tr:last-child td {
+  border-bottom: 1px solid #e0e0e0;
 }
 </style>
