@@ -33,7 +33,7 @@ watch(
 			<tbody>
 				<tr>
 					<th>준공연도</th>
-					<td>{{ apt.buildYear }}</td>
+					<td>{{ apt.buildYear }}년 ({{ 2025 - apt.buildYear }}년차)</td>
 				</tr>
 			</tbody>
 			<tbody>

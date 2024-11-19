@@ -54,8 +54,8 @@ const handleLogin = async () => {
   <ErrorModal />
   <div class="login-container">
 
-    <!-- Login Title -->
-    <h1 class="login-title">Login</h1>
+    <!-- SignUp Title -->
+    <h1 class="login-title">Sign Up</h1>
 
     <!-- Email Input -->
     <div class="input-container">
@@ -76,7 +76,6 @@ const handleLogin = async () => {
         type="password"
         placeholder="비밀번호를 입력하세요."
         class="input-box"
-        @keyup.enter="handleLogin"
       />
     </div>
 

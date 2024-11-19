@@ -63,7 +63,6 @@ const onChangeGugun = (val) => {
 }
 
 const onMarkerClickEvent = (inputAptId) => {
-  console.log(inputAptId);
   aptId.value = inputAptId;
 }
 
@@ -88,8 +87,8 @@ const onSearchApt = (searchQuery) => {
   </div>
   <div class="map-container">
     <div class="select-container">
-      <VSelect style="float: left; height: 41px; margin: 10px 0" :selectOption="sidoList" @onKeySelect="onChangeSido" />
-      <VSelect style="float: right; height: 41px; margin: 10px 0" :selectOption="gugunList" @onKeySelect="onChangeGugun" />
+      <VSelect style="float: left; height: 36px; margin: 0 10px" :selectOption="sidoList" @onKeySelect="onChangeSido" />
+      <VSelect style="float: right; height: 36px; margin: 0 10px" :selectOption="gugunList" @onKeySelect="onChangeGugun" />
     </div>
     <VKakaoMap :apt-list="aptList" @marker-click-event="onMarkerClickEvent" />
   </div>
@@ -97,21 +96,21 @@ const onSearchApt = (searchQuery) => {
 
 <style scoped>
 .tab-container {
-  width: 30%;
+  width: 25%;
   float: left;
-  background-color: #f5f5f5;
+  background-color: white;
 }
 
 .map-container {
-  width: 70%;
+  width: 75%;
   float: right;
-  background-color: #f5f5f5;
+  background-color: white;
 }
 
 .select-container {
-  height: 61px;
-  width: 600px;
-  margin: 0 1rem;
-  background-color: #f5f5f5;
+  display: flex;
+  position: absolute;
+  z-index: 5;
+  margin: 0.7rem 0.7rem;
 }
 </style>

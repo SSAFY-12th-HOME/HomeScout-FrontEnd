@@ -5,6 +5,8 @@ import { KakaoMap, KakaoMapMarker } from 'vue3-kakao-maps';
 const markerList = ref([]);
 const map = ref();
 const clusterer = ref();
+const markerIcon = '/src/assets/house-marker-icon.png';
+const markerSelectIcon = '/src/assets/house-marker-select-icon.png';
 
 const props = defineProps({
 	aptList: {
@@ -19,7 +21,11 @@ watch(
 	() => props.aptList,
 	(newList) => {
 		markerList.value = newList.map((apt) => {
-			let marker = {aptId: apt.aptId, lat: apt.latitude, lng: apt.longitude};
+			let marker = {aptId: apt.aptId, aptNm: apt.aptNm, lat: apt.latitude, lng: apt.longitude, icon: markerIcon, zindex: 0};
+			if(newList.length === 1) {
+				marker.icon = markerSelectIcon;
+				marker.zindex = 1;
+			}
 			return marker;
 		});
 		panTo(markerList.value[0].lat, markerList.value[0].lng)
@@ -40,6 +46,12 @@ const onLoadKakaoMapMarkerCluster = (clustererRef) => {
 
 const onClickKakaoMapMarker = (marker) => {
 	emit("markerClickEvent", marker.aptId);
+	markerList.value.forEach(marker => {
+		marker.icon = markerIcon;
+		marker.zindex = 0;
+	});
+	marker.icon = markerSelectIcon;
+	marker.zindex = 1;
 	panTo(marker.lat, marker.lng)
 }
 
@@ -57,7 +69,7 @@ const panTo = (lat, lng) => {
 		:lat="37.563652488" 
 		:lng="126.977532624" 
 		width="100%" 
-		height="100vh" 
+		height="90vh" 
 		level="6"
 		@onLoadKakaoMap="onLoadKakaoMap"
 		@onLoadKakaoMapMarkerCluster="onLoadKakaoMapMarkerCluster"
@@ -69,8 +81,19 @@ const panTo = (lat, lng) => {
 			:lat="marker.lat" 
 			:lng="marker.lng"
 			:clickable="true"
+			:image="{
+        imageSrc: marker.icon,
+        imageWidth: 27,
+        imageHeight: 32,
+        imageOption: {}
+      }"
+			:z-index="marker.zindex"
 			@onClickKakaoMapMarker="onClickKakaoMapMarker(marker)"
-		 />
+		>
+			<template v-if="marker.zindex === 1" v-slot:infoWindow>
+				<div style="padding: 5px; text-align: center;">{{ marker.aptNm }}</div>
+			</template>
+		</KakaoMapMarker>
 	</KakaoMap>
 	
 </template>

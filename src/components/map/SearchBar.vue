@@ -16,7 +16,7 @@ const onSearch = () => {
       v-model="searchQuery"
       @keydown.enter="onSearch()"
       type="text"
-      placeholder="Search..."
+      placeholder="아파트 이름 검색"
     />
     <button @click="onSearch()">Search</button>
   </div>
@@ -32,8 +32,8 @@ const onSearch = () => {
 
 input {
   padding: 8px;
-  font-size: 16px;
-  width: 300px;
+  font-size: 13px;
+  width: 280px;
   border: 1px solid #ccc;
   border-radius: 4px;
   outline: none;
@@ -42,7 +42,7 @@ input {
 button {
   padding: 8px 12px;
   margin-left: 8px;
-  font-size: 16px;
+  font-size: 13px;
   background-color: #007bff;
   color: white;
   border: none;

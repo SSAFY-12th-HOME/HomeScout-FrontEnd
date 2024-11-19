@@ -5,6 +5,7 @@ import AptInfo from '@/components/map/AptInfo.vue';
 import DealHistory from '@/components/map/DealHistory.vue';
 import SubwayInfo from '@/components/map/SubwayInfo.vue';
 import LifeStory from '@/components/map/LifeStory.vue';
+import SaleList from '@/components/map/SaleList.vue';
 
 const props = defineProps({
     aptId: {
@@ -43,6 +44,8 @@ watch(
             <div class="divider"></div>
             <SubwayInfo :subway-list-props="aptInfo.subway"/>
             <div class="divider"></div>
+            <SaleList :sale-list-props="aptInfo.sale"/>
+            <div class="divider"></div>
             <LifeStory :life-story-props="aptInfo.lifeStory"/>
         </div>
     </div>
@@ -51,9 +54,10 @@ watch(
 <style scoped>
 .container {
     /* 컨테이너의 높이를 뷰포트 높이로 설정 */
-    height: 100vh;
+    height: 81.9vh;
     /* 또는 특정 높이로 설정할 수 있습니다 */
     /* height: 800px; */
+    padding: 0 0;
 }
 
 .apt-container {
@@ -63,7 +67,7 @@ watch(
     
     /* 스크롤바 스타일링 */
     scrollbar-width: thin; /* Firefox */
-    scrollbar-color: #888 #f1f1f1; /* Firefox */
+    scrollbar-color: #bbbbbb #f1f1f1; /* Firefox */
 }
 
 /* Webkit 브라우저(Chrome, Safari 등)를 위한 스크롤바 스타일링 */
@@ -86,11 +90,12 @@ watch(
 
 .divider {
     height: 10px;
-    background-color: lightgray;
+    background-color: rgb(236, 236, 236);
 }
 
 .empty-message {
     text-align: center;
     padding: 20px;
+    font-size: 30px;
 }
 </style>

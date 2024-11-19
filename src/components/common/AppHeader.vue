@@ -1,7 +1,21 @@
-<script>
-import { RouterLink, RouterView } from 'vue-router'
-export default {
-  name: 'HeaderComponent',
+<script setup>
+import { RouterLink } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+
+const userStore = useUserStore()
+const router = useRouter()
+
+const isLoggedIn = computed(() => !!userStore.token)
+const userProfile = computed(() => ({
+  nickname: userStore.nickname,
+  profileImg: userStore.profileImg
+}))
+
+const handleLogout = () => {
+  userStore.clearUserInfo()
+  router.push('/')
 }
 </script>
 
@@ -10,8 +24,9 @@ export default {
     <div class="header-container">
       <!-- Logo Section -->
       <RouterLink to="/" class="logo">
-        <img src="@/assets/home-scout-logo-green.png" alt="Home Scout" width=150 />
+        <img src="@/assets/home-scout-logo-green.png" alt="Home Scout" width=140 />
       </RouterLink>
+      
       <!-- Navigation Menu -->
       <nav class="nav-menu">
         <ul>
@@ -24,8 +39,24 @@ export default {
 
       <!-- Auth Buttons -->
       <div class="auth-buttons">
-        <RouterLink to="/login" class="btn-login">로그인</RouterLink>
-        <RouterLink to="/signup" class="btn-signup">회원가입</RouterLink>
+        <!-- 로그인하지 않은 경우 -->
+        <template v-if="!isLoggedIn">
+          <RouterLink to="/login" class="btn-login">로그인</RouterLink>
+          <RouterLink to="/signup" class="btn-signup">회원가입</RouterLink>
+        </template>
+        
+        <!-- 로그인한 경우 -->
+        <template v-else>
+          <div class="user-profile">
+            <img 
+              :src="userProfile.profileImg" 
+              :alt="userProfile.nickname" 
+              class="profile-img"
+            />
+            <span class="nickname">{{ userProfile.nickname }}</span>
+          </div>
+          <button @click="handleLogout" class="btn-logout">로그아웃</button>
+        </template>
       </div>
     </div>
   </header>
@@ -33,8 +64,8 @@ export default {
 
 <style scoped>
 .header {
-  background-color: #f5f5f5;
-  padding: 1rem 0;
+  background-color: white;
+  padding: 0.5rem 0;
   width: 100%;
   color: #66b56b;
 }
@@ -59,6 +90,7 @@ export default {
   gap: 2rem;
   margin: 0;
   padding: 0;
+  font-weight: bold;
 }
 
 .nav-menu a {
@@ -70,16 +102,59 @@ export default {
 .auth-buttons {
   display: flex;
   gap: 1rem;
+  align-items: center;
 }
 
 .auth-buttons a {
   color: #66b56b;
   text-decoration: none;
   padding: 0.5rem 1rem;
+  font-weight: bold;
 }
 
 .btn-signup {
   border: 1px solid #66b56b;
   border-radius: 4px;
+}
+
+.btn-signup:hover {
+  background-color: #66b56b;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+/* 로그인 상태일 때의 스타일 */
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.profile-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.nickname {
+  font-weight: bold;
+  color: #66b56b;
+}
+
+.btn-logout {
+  background: none;
+  border: 1px solid #66b56b;
+  color: #66b56b;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-logout:hover {
+  background-color: #66b56b;
+  color: white;
+  transition: all 0.3s ease;
 }
 </style>

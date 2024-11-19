@@ -11,11 +11,16 @@ import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { useKakao } from 'vue3-kakao-maps/@utils';
 
+import piniaPersist from 'pinia-plugin-persistedstate'
+
 useKakao(import.meta.env.VITE_KAKAO_MAP_SERVICE_KEY, ['clusterer', 'services', 'drawing']);
 
 const app = createApp(App)
 
-app.use(createPinia())
+const pinia = createPinia()
+pinia.use(piniaPersist)
+
+app.use(pinia)
 app.use(router)
 app.use(VueFullPage)
 
