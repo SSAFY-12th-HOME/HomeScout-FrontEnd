@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user.js'
 import { login } from '@/api/user'
 
@@ -8,9 +8,10 @@ import ErrorModal from '@/components/common/ErrorModal.vue'
 import { useErrorStore } from '@/stores/error'
 
 const errorStore = useErrorStore();
+const userStore = useUserStore();
 
 const router = useRouter();
-const userStore = useUserStore();
+const route = useRoute();
 
 // Reactive variables for email and password
 const email = ref('');
@@ -38,8 +39,13 @@ const handleLogin = async () => {
         role: data.role
       })
   
+      // console.log(route.query.redirect)
       // 로그인 성공 후 메인 페이지로 이동
-      router.push('/')
+      if(route.query.redirect === undefined) {
+        router.push('/')
+      } else {
+        router.push(route.query.redirect)
+      }
     },
     (err) => {
       errorStore.showError(err.response.data.message, '로그인 오류')
@@ -98,8 +104,9 @@ const handleLogin = async () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: 80vh;
   background-color: white;
+  font-family: Arial, sans-serif;
 }
 
 /* Logo styling */
@@ -112,10 +119,11 @@ const handleLogin = async () => {
 
 /* Login title styling */
 .login-title {
-  font-size: 150px;
+  font-size: 80px;
   color: #66b56b;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
   text-align: center;
+  font-weight: bold;
 }
 
 /* Container for inputs and icons */
