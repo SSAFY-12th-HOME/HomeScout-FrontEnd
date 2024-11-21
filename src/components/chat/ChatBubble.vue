@@ -4,38 +4,38 @@ import { computed } from 'vue'
 const props = defineProps({
   message: {
     type: String,
-    default: '안녕하세요. 부동산입니다.'
+    default: '안녕하세요. 부동산입니다.',
   },
   profileImage: {
     type: String,
     required: true,
-    validator: (value) => value && value.trim().length > 0
+    validator: (value) => value && value.trim().length > 0,
   },
   timestamp: {
     type: String,
-    required: true
+    required: true,
   },
   isMyMessage: Boolean,
   userId: {
     type: [String, Number],
-    required: true
+    required: true,
   },
   showProfile: {
     type: Boolean,
-    default: true
-  }
+    default: true,
+  },
 })
 
 const containerClass = computed(() => ({
-  'chat-bubble-container--mine': props.isMyMessage
+  'chat-bubble-container--mine': props.isMyMessage,
 }))
 
 const contentClass = computed(() => ({
-  'message-content--reverse': props.isMyMessage
+  'message-content--reverse': props.isMyMessage,
 }))
 
 const bubbleClass = computed(() => ({
-  'message-bubble--mine': props.isMyMessage
+  'message-bubble--mine': props.isMyMessage,
 }))
 </script>
 
@@ -43,12 +43,7 @@ const bubbleClass = computed(() => ({
   <div class="chat-bubble-container" :class="containerClass">
     <div v-if="!isMyMessage" class="profile-image-wrapper">
       <div v-show="showProfile" class="profile-image">
-        <img
-          :src="profileImage"
-          :alt="`${userId}'s profile`"
-          loading="lazy"
-          decoding="async"
-        >
+        <img :src="profileImage" :alt="`${userId}'s profile`" loading="lazy" decoding="async" />
       </div>
     </div>
     <div class="message-content" :class="contentClass">
@@ -118,7 +113,7 @@ const bubbleClass = computed(() => ({
 }
 
 .message-bubble--mine {
-  background-color: #66B56B;
+  background-color: #66b56b;
   color: white;
 }
 

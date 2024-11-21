@@ -3,7 +3,7 @@ import { useSuccessStore } from '@/stores/success'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 
-const router = useRouter();
+const router = useRouter()
 
 const successStore = useSuccessStore()
 const { isVisible, message, title, routerPath } = storeToRefs(successStore)
@@ -15,9 +15,9 @@ const handleOverlayClick = () => {
 
 const handleOkClick = () => {
   hideSuccess()
-  if(routerPath.value !== '') {
+  if (routerPath.value !== '') {
     router.push(routerPath.value)
-  } 
+  }
 }
 </script>
 
@@ -27,18 +27,24 @@ const handleOkClick = () => {
       <div class="modal-container" @click.stop>
         <div class="error-content">
           <div class="error-icon" :class="{ 'shake-animation': isVisible }">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#000" stroke="currentColor" stroke-width="3">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="#000"
+              stroke="currentColor"
+              stroke-width="3"
+            >
               <line x1="19" y1="6" x2="12" y2="20"></line>
               <line x1="6" y1="6" x2="13" y2="20"></line>
             </svg>
           </div>
-          
+
           <h2 class="error-title">{{ title }}</h2>
           <p class="error-message">{{ message }}</p>
-          
-          <button class="ok-button" @click="handleOkClick">
-            확인
-          </button>
+
+          <button class="ok-button" @click="handleOkClick">확인</button>
         </div>
       </div>
     </div>
@@ -89,19 +95,27 @@ const handleOkClick = () => {
 
 /* 흔들림 애니메이션 */
 @keyframes shake {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(0);
   }
-  10%, 30%, 50%, 70%, 90% {
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
     transform: translateX(-4px);
   }
-  20%, 40%, 60%, 80% {
+  20%,
+  40%,
+  60%,
+  80% {
     transform: translateX(4px);
   }
 }
 
 .shake-animation {
-  animation: shake 0.8s cubic-bezier(.36,.07,.19,.97) both;
+  animation: shake 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
 .error-title {

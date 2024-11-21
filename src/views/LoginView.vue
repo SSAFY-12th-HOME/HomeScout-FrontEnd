@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user.js'
 import { login } from '@/api/user'
@@ -7,28 +7,28 @@ import { login } from '@/api/user'
 import ErrorModal from '@/components/common/ErrorModal.vue'
 import { useErrorStore } from '@/stores/error'
 
-const errorStore = useErrorStore();
-const userStore = useUserStore();
+const errorStore = useErrorStore()
+const userStore = useUserStore()
 
-const router = useRouter();
-const route = useRoute();
+const router = useRouter()
+const route = useRoute()
 
 // Reactive variables for email and password
-const email = ref('');
-const password = ref('');
-const isLoading = ref(false);
+const email = ref('')
+const password = ref('')
+const isLoading = ref(false)
 
 // Handle Login button click event
 const handleLogin = async () => {
   // Add login logic here (e.g., validation, API call)
-  console.log('Login clicked', { email: email.value, password: password.value });
+  console.log('Login clicked', { email: email.value, password: password.value })
   isLoading.value = true
-  
+
   login(
     { email: email.value, password: password.value },
     ({ data }) => {
-      console.log(data);
-  
+      console.log(data)
+
       // Pinia store에 유저 정보 저장
       userStore.setUserInfo({
         token: data.token,
@@ -36,12 +36,12 @@ const handleLogin = async () => {
         email: data.email,
         nickname: data.nickname,
         profileImg: data.profileImg,
-        role: data.role
+        role: data.role,
       })
-  
+
       // console.log(route.query.redirect)
       // 로그인 성공 후 메인 페이지로 이동
-      if(route.query.redirect === undefined) {
+      if (route.query.redirect === undefined) {
         router.push('/')
       } else {
         router.push(route.query.redirect)
@@ -49,29 +49,23 @@ const handleLogin = async () => {
     },
     (err) => {
       errorStore.showError(err.response.data.message, '로그인 오류')
-    }
+    },
   )
 
   isLoading.value = false
-};
+}
 </script>
 
 <template>
   <ErrorModal />
   <div class="login-container">
-
     <!-- Login Title -->
     <h1 class="login-title">Login</h1>
 
     <!-- Email Input -->
     <div class="input-container">
       <img src="@/assets/EmailIcon.svg" alt="Email Icon" class="input-icon" />
-      <input
-        v-model="email"
-        type="email"
-        placeholder="이메일을 입력하세요."
-        class="input-box"
-      />
+      <input v-model="email" type="email" placeholder="이메일을 입력하세요." class="input-box" />
     </div>
 
     <!-- Password Input -->
@@ -189,7 +183,6 @@ const handleLogin = async () => {
 h1 {
   margin-top: 0;
 }
-
 </style>
 
 <style>

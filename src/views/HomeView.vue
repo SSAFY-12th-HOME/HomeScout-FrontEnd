@@ -4,7 +4,10 @@ import 'fullpage.js/dist/fullpage.min.css'
 
 import HomeHeader from '@/components/common/HomeHeader.vue'
 import AppBody from '@/components/home/AppBody.vue'
-import SecondSection from '@/components/home/SecondSection.vue'
+import MapSection from '@/components/home/MapSection.vue'
+import PodcastSection from '@/components/home/PodcastSection.vue'
+import QuizSection from '@/components/home/QuizSection.vue'
+import CheckSection from '@/components/home/CheckSection.vue'
 
 // AOS 라이브러리를 가져옵니다.
 // AOS는 스크롤 시 애니메이션을 적용해주는 라이브러리입니다.
@@ -111,19 +114,22 @@ function triggerAOS() {
     </div>
 
     <!-- Second section -->
-    <div class="section">
-      <SecondSection />
+    <div class="section" style="background-color: white">
+      <MapSection />
     </div>
 
     <!-- Third section with slides -->
     <div class="section">
-      <p>Third</p>
+      <PodcastSection />
     </div>
 
     <!-- Fourth section -->
+    <div class="section" style="background-color: white">
+      <QuizSection />
+    </div>
+
     <div class="section">
-      <h1>Section 4</h1>
-      <p>This is the last section</p>
+      <CheckSection />
     </div>
   </full-page>
 </template>

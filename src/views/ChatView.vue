@@ -11,97 +11,94 @@ const messages = ref([
     profileImage: 'https://picsum.photos/200',
     timestamp: '오전 9:25',
     isMyMessage: false,
-    userId: 'user123'
+    userId: 'user123',
   },
   {
     text: '네, 안녕하세요.',
     profileImage: '/path/to/user-image.jpg',
     timestamp: '오전 9:26',
     isMyMessage: true,
-    userId: 'user-1'
+    userId: 'user-1',
   },
   {
     text: '안녕하세요. 부동산입니다.',
     profileImage: 'https://picsum.photos/200',
     timestamp: '오전 9:25',
     isMyMessage: false,
-    userId: 'user123'
+    userId: 'user123',
   },
   {
     text: '네, 안녕하세요.',
     profileImage: '/path/to/user-image.jpg',
     timestamp: '오전 9:26',
     isMyMessage: true,
-    userId: 'user-1'
+    userId: 'user-1',
   },
   {
     text: '안녕하세요. 부동산입니다.',
     profileImage: 'https://picsum.photos/200',
     timestamp: '오전 9:25',
     isMyMessage: false,
-    userId: 'user123'
+    userId: 'user123',
   },
   {
     text: '안녕하세요. 부동산입니다.',
     profileImage: 'https://picsum.photos/200',
     timestamp: '오전 9:25',
     isMyMessage: false,
-    userId: 'user123'
+    userId: 'user123',
   },
   {
     text: '안녕하세요. 부동산입니다.',
     profileImage: 'https://picsum.photos/200',
     timestamp: '오전 9:25',
     isMyMessage: false,
-    userId: 'user123'
+    userId: 'user123',
   },
   {
     text: '안녕하세요. 부동산입니다.',
     profileImage: 'https://picsum.photos/200',
     timestamp: '오전 9:25',
     isMyMessage: false,
-    userId: 'user123'
-  }
-
+    userId: 'user123',
+  },
 ])
 
-const showChatList = ref(false);
+const showChatList = ref(false)
 
 const toggleChatList = () => {
-  showChatList.value = !showChatList.value;
-};
-
-
+  showChatList.value = !showChatList.value
+}
 </script>
 
 <!-- App.vue -->
 <template>
-    <!-- <app-header />
+  <!-- <app-header />
     <app-body /> -->
-    <!--    <Eg></Eg>-->
-    <!--    <div>-->
-    <!--      <ChatContainer-->
-    <!--        :messages="messages"-->
-    <!--        :current-user-id="currentUserId"-->
-    <!--        @send-message="handleNewMessage"-->
-    <!--      />-->
-    <!--    </div>-->
-    <!--    <div>-->
-    <!--      <ChatRoomList></ChatRoomList>-->
-    <!--    </div>-->
-    <!-- Floating Chat Button -->
-    <!-- Floating button -->
-    <button class="floating-button" @click="toggleChatList">
-      <span class="icon">💬</span>
-    </button>
+  <!--    <Eg></Eg>-->
+  <!--    <div>-->
+  <!--      <ChatContainer-->
+  <!--        :messages="messages"-->
+  <!--        :current-user-id="currentUserId"-->
+  <!--        @send-message="handleNewMessage"-->
+  <!--      />-->
+  <!--    </div>-->
+  <!--    <div>-->
+  <!--      <ChatRoomList></ChatRoomList>-->
+  <!--    </div>-->
+  <!-- Floating Chat Button -->
+  <!-- Floating button -->
+  <button class="floating-button" @click="toggleChatList">
+    <span class="icon">💬</span>
+  </button>
 
-    <!-- Chat room list component -->
-    <transition name="fade">
-      <div v-if="showChatList" class="chat-list-container">
-        <button class="close-button" @click="toggleChatList">×</button>
-        <ChatRoomList />
-      </div>
-    </transition>
+  <!-- Chat room list component -->
+  <transition name="fade">
+    <div v-if="showChatList" class="chat-list-container">
+      <button class="close-button" @click="toggleChatList">×</button>
+      <ChatRoomList />
+    </div>
+  </transition>
 </template>
 
 <style scoped>
@@ -110,8 +107,6 @@ const toggleChatList = () => {
   min-height: 100vh;
   background-color: #66b56b;
 }
-
-
 
 .floating-button {
   position: fixed;

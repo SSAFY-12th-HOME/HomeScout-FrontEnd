@@ -1,14 +1,20 @@
 <script setup>
-import { sendVerifyCode, checkVerifyCode, checkDuplicationEmail, checkDuplicationNickname, signUp } from '@/api/user';
-import ErrorModal from '@/components/common/ErrorModal.vue';
+import {
+  sendVerifyCode,
+  checkVerifyCode,
+  checkDuplicationEmail,
+  checkDuplicationNickname,
+  signUp,
+} from '@/api/user'
+import ErrorModal from '@/components/common/ErrorModal.vue'
 import { ref, computed } from 'vue'
-import { useErrorStore } from '@/stores/error';
-import { useSuccessStore } from '@/stores/success';
+import { useErrorStore } from '@/stores/error'
+import { useSuccessStore } from '@/stores/success'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
-import SuccessModal from '@/components/common/SuccessModal.vue';
+import SuccessModal from '@/components/common/SuccessModal.vue'
 
-const errorStore = useErrorStore();
-const successStore = useSuccessStore();
+const errorStore = useErrorStore()
+const successStore = useSuccessStore()
 
 // Form fields
 const email = ref('')
@@ -71,9 +77,9 @@ const validateEmail = debounce(async () => {
     return
   }
 
-  await new Promise(resolve => setTimeout(resolve, 300))
+  await new Promise((resolve) => setTimeout(resolve, 300))
 
-    // 이메일 중복 확인 API 호출 시뮬레이션
+  // 이메일 중복 확인 API 호출 시뮬레이션
   checkDuplicationEmail(
     { email: email.value },
     () => {
@@ -83,12 +89,13 @@ const validateEmail = debounce(async () => {
     () => {
       isEmailAvailable.value = false
       emailMessage.value = '이미 사용 중인 이메일입니다.'
-    }
+    },
   )
 }, 300)
 
 const isFormValid = computed(() => {
-  const baseValidation = email.value &&
+  const baseValidation =
+    email.value &&
     isEmailValid.value &&
     isEmailAvailable.value &&
     isVerified.value &&
@@ -103,9 +110,7 @@ const isFormValid = computed(() => {
 
   // 공인중개사인 경우 추가 검증
   if (userType.value === '공인중개사') {
-    return baseValidation && 
-           brokerLicense.value && 
-           isBrokerLicenseValid.value
+    return baseValidation && brokerLicense.value && isBrokerLicenseValid.value
   }
 
   return baseValidation
@@ -123,11 +128,11 @@ const validatePassword = debounce(async () => {
   const hasLowerCase = /[a-z]/.test(password.value)
   const hasNumbers = /\d/.test(password.value)
   const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password.value)
-  
+
   // 조합 조건 체크 (2가지 이상)
   const conditions = [hasUpperCase || hasLowerCase, hasNumbers, hasSpecialChar]
-  const validCombination = conditions.filter(condition => condition).length >= 2
-  
+  const validCombination = conditions.filter((condition) => condition).length >= 2
+
   try {
     // 비동기 검증 시뮬레이션
     isPasswordValid.value = password.value.length >= 8 && validCombination
@@ -153,14 +158,12 @@ const sendVerificationCode = async () => {
       modalMessage.value = '인증 코드 전송에 실패했습니다.'
       errorStore.showError(err.response.data.message)
       isLoading.value = false
-    }
+    },
   )
-
 }
 
 // Verify code
 const verifyCode = debounce(async () => {
-    
   checkVerifyCode(
     { email: email.value, emailCode: verificationCode.value },
     () => {
@@ -170,7 +173,7 @@ const verifyCode = debounce(async () => {
     () => {
       isVerified.value = false
       verificationMessage.value = '잘못된 인증 코드입니다.'
-    }
+    },
   )
 }, 300)
 
@@ -186,7 +189,7 @@ const checkNickname = debounce(async () => {
       () => {
         isNicknameAvailable.value = false
         nicknameMessage.value = '이미 사용 중인 닉네임입니다.'
-      }
+      },
     )
   } else {
     isNicknameAvailable.value = false
@@ -195,7 +198,7 @@ const checkNickname = debounce(async () => {
 }, 300)
 
 // 닉네임 실시간 업데이트 (v-model 대신)
-const updateNickname = ({ target : { value }}) => {
+const updateNickname = ({ target: { value } }) => {
   nickname.value = value
   checkNickname()
 }
@@ -222,10 +225,10 @@ const handleSubmit = async () => {
     passwordConfirm: confirmPassword.value,
     nickname: nickname.value,
     phone: phoneNumber.value,
-    role: userType.value
+    role: userType.value,
   }
 
-  await new Promise(resolve => setTimeout(resolve, 500))
+  await new Promise((resolve) => setTimeout(resolve, 500))
   signUp(
     payload,
     () => {
@@ -237,7 +240,7 @@ const handleSubmit = async () => {
       isLoading.value = false
       modalMessage.value = '회원가입에 실패했습니다.'
       errorStore.showError(modalMessage.value)
-    }
+    },
   )
 }
 
@@ -245,12 +248,12 @@ const handleSubmit = async () => {
 const formatPhoneNumber = (event) => {
   // 입력된 값에서 숫자만 추출
   let cleaned = event.target.value.replace(/\D/g, '')
-  
+
   // 숫자만 입력되도록 제한
   if (cleaned.length > 11) {
     cleaned = cleaned.slice(0, 11)
   }
-  
+
   // 전화번호 형식에 맞게 포맷팅
   let formatted = ''
   if (cleaned.length >= 3) {
@@ -263,12 +266,12 @@ const formatPhoneNumber = (event) => {
   } else {
     formatted = cleaned
   }
-  
+
   // 전화번호 유효성 검사
   // 010으로 시작하고 총 11자리인지 확인
   const phoneRegex = /^010\d{8}$/
   isValidPhoneNumber.value = phoneRegex.test(cleaned)
-  
+
   // v-model 값 업데이트
   phoneNumber.value = formatted
 }
@@ -277,12 +280,12 @@ const formatPhoneNumber = (event) => {
 const formatBrokerLicense = (event) => {
   // 입력된 값에서 숫자만 추출
   let cleaned = event.target.value.replace(/\D/g, '')
-  
+
   // 11자리로 제한
   if (cleaned.length > 11) {
     cleaned = cleaned.slice(0, 11)
   }
-  
+
   // 포맷팅된 값 생성 (XX-XXXX-XXXXX)
   let formatted = ''
   if (cleaned.length >= 2) {
@@ -298,49 +301,49 @@ const formatBrokerLicense = (event) => {
   } else {
     formatted = cleaned
   }
-  
+
   // 자격증 번호 유효성 검사 (11자리)
   const licenseRegex = /^\d{11}$/
   isBrokerLicenseValid.value = licenseRegex.test(cleaned)
-  
+
   if (isBrokerLicenseValid.value) {
     brokerLicenseMessage.value = '유효한 자격증 번호 형식입니다.'
   } else {
-    brokerLicenseMessage.value = cleaned.length === 11 ? 
-      '유효하지 않은 자격증 번호입니다.' : 
-      '자격증 번호 11자리를 입력해주세요.'
+    brokerLicenseMessage.value =
+      cleaned.length === 11
+        ? '유효하지 않은 자격증 번호입니다.'
+        : '자격증 번호 11자리를 입력해주세요.'
   }
-  
+
   // v-model 값 업데이트
   brokerLicense.value = formatted
 }
 </script>
 
 <template>
-
   <div class="signup-container">
     <div class="loading" v-if="isLoading">
-      <PulseLoader/>
+      <PulseLoader />
     </div>
 
     <!-- Main Title -->
     <h1 class="main-title">Register With Us</h1>
 
-    <SuccessModal/>
-    <ErrorModal/>
+    <SuccessModal />
+    <ErrorModal />
 
     <!-- Form Section -->
     <form class="signup-form" @submit.prevent="handleSubmit">
       <!-- User Type Selection Tabs -->
       <div class="user-type-tabs">
-        <button 
+        <button
           type="button"
           :class="['tab-button', { active: userType === '일반' }]"
           @click="userType = '일반'"
         >
           일반 회원
         </button>
-        <button 
+        <button
           type="button"
           :class="['tab-button', { active: userType === '공인중개사' }]"
           @click="userType = '공인중개사'"
@@ -360,15 +363,18 @@ const formatBrokerLicense = (event) => {
               class="input-field"
               :class="{
                 'input-success': isBrokerLicenseValid && brokerLicense,
-                'input-error': !isBrokerLicenseValid && brokerLicense
+                'input-error': !isBrokerLicenseValid && brokerLicense,
               }"
               :disabled="isBrokerLicenseValid && brokerLicense"
               @input="formatBrokerLicense"
               maxlength="13"
             />
           </div>
-          <p class="license-status" v-if="brokerLicense" 
-            :class="{ 'success': isBrokerLicenseValid, 'error': !isBrokerLicenseValid }">
+          <p
+            class="license-status"
+            v-if="brokerLicense"
+            :class="{ success: isBrokerLicenseValid, error: !isBrokerLicenseValid }"
+          >
             {{ brokerLicenseMessage }}
           </p>
         </div>
@@ -384,24 +390,28 @@ const formatBrokerLicense = (event) => {
             class="input-field"
             :class="{
               'input-success': isEmailValid && isEmailAvailable && email,
-              'input-error': (!isEmailValid || !isEmailAvailable) && email
+              'input-error': (!isEmailValid || !isEmailAvailable) && email,
             }"
             @input="validateEmail"
             :disabled="isVerificationSent"
           />
-          <button 
-            type="button" 
-            class="verify-button" 
+          <button
+            type="button"
+            class="verify-button"
             @click="sendVerificationCode"
             :disabled="isVerificationSent || !isEmailValid || !isEmailAvailable"
           >
             {{ isVerificationSent ? '전송됨' : '인증하기' }}
           </button>
         </div>
-        <p class="email-status" v-if="email" :class="{
-          'error': (!isEmailValid || !isEmailAvailable) && email,
-          'success': isEmailValid && isEmailAvailable && email
-        }">
+        <p
+          class="email-status"
+          v-if="email"
+          :class="{
+            error: (!isEmailValid || !isEmailAvailable) && email,
+            success: isEmailValid && isEmailAvailable && email,
+          }"
+        >
           {{ emailMessage }}
         </p>
       </div>
@@ -416,15 +426,18 @@ const formatBrokerLicense = (event) => {
             placeholder="인증번호를 입력하세요"
             class="input-field"
             :class="{
-              'input-success': isVerified && verificationCode ,
-              'input-error': !isVerified && verificationCode
+              'input-success': isVerified && verificationCode,
+              'input-error': !isVerified && verificationCode,
             }"
             :disabled="isVerified"
             @input="verifyCode"
           />
         </div>
-        <p class="verification-status" v-if="verificationCode"
-          :class="{ 'success': isVerified, 'error': !isVerified && verificationCode }">
+        <p
+          class="verification-status"
+          v-if="verificationCode"
+          :class="{ success: isVerified, error: !isVerified && verificationCode }"
+        >
           {{ verificationMessage }}
         </p>
       </div>
@@ -440,13 +453,15 @@ const formatBrokerLicense = (event) => {
             class="input-field"
             :class="{
               'input-success': isPasswordValid && password,
-              'input-error': !isPasswordValid && password
+              'input-error': !isPasswordValid && password,
             }"
             @input="validatePassword"
           />
         </div>
-        <p class="password-hint" 
-          :class="{ 'success': isPasswordValid, 'error': !isPasswordValid && password }">
+        <p
+          class="password-hint"
+          :class="{ success: isPasswordValid, error: !isPasswordValid && password }"
+        >
           영문, 숫자, 특수문자 중 2종류 이상을 조합하여 최소 8자리 이상
         </p>
       </div>
@@ -462,12 +477,15 @@ const formatBrokerLicense = (event) => {
             class="input-field"
             :class="{
               'input-success': passwordsMatch && confirmPassword,
-              'input-error': !passwordsMatch && confirmPassword
+              'input-error': !passwordsMatch && confirmPassword,
             }"
           />
         </div>
-        <p class="password-match" v-if="confirmPassword" 
-          :class="{ 'success': passwordsMatch, 'error': !passwordsMatch }">
+        <p
+          class="password-match"
+          v-if="confirmPassword"
+          :class="{ success: passwordsMatch, error: !passwordsMatch }"
+        >
           {{ passwordsMatch ? '비밀번호가 일치합니다.' : '비밀번호가 일치하지 않습니다.' }}
         </p>
       </div>
@@ -483,18 +501,21 @@ const formatBrokerLicense = (event) => {
             class="input-field"
             :class="{
               'input-success': isNicknameAvailable && nickname,
-              'input-error': !isNicknameAvailable && nickname
+              'input-error': !isNicknameAvailable && nickname,
             }"
             @input="updateNickname"
           />
         </div>
-        <p class="nickname-status" v-if="nickname" 
-        :class="{ 'success': isNicknameAvailable, 'error': !isNicknameAvailable }">
+        <p
+          class="nickname-status"
+          v-if="nickname"
+          :class="{ success: isNicknameAvailable, error: !isNicknameAvailable }"
+        >
           {{ nicknameMessage }}
         </p>
       </div>
 
-       <!-- Phone Number Field -->
+      <!-- Phone Number Field -->
       <div class="form-group">
         <div class="input-wrapper">
           <i class="icon-phone"></i>
@@ -505,25 +526,23 @@ const formatBrokerLicense = (event) => {
             class="input-field"
             :class="{
               'input-success': phoneNumber && isValidPhoneNumber,
-              'input-error': phoneNumber && !isValidPhoneNumber
+              'input-error': phoneNumber && !isValidPhoneNumber,
             }"
             @input="formatPhoneNumber"
             maxlength="13"
           />
         </div>
-        <p class="phone-status" v-if="phoneNumber && !isValidPhoneNumber" :class="{ 'error': !isValidPhoneNumber }">
+        <p
+          class="phone-status"
+          v-if="phoneNumber && !isValidPhoneNumber"
+          :class="{ error: !isValidPhoneNumber }"
+        >
           올바른 휴대폰 번호를 입력해주세요.
         </p>
       </div>
 
       <!-- Sign Up Button -->
-      <button 
-        type="submit" 
-        class="signup-button"
-        :disabled="!isFormValid"
-      >
-        회원가입
-      </button>
+      <button type="submit" class="signup-button" :disabled="!isFormValid">회원가입</button>
     </form>
 
     <!-- Modal -->
@@ -568,7 +587,7 @@ const formatBrokerLicense = (event) => {
 /* Main Title */
 .main-title {
   text-align: center;
-  color: #66B56B;
+  color: #66b56b;
   font-size: 60px;
   font-weight: bold;
   margin-bottom: 30px;
@@ -617,23 +636,23 @@ input::placeholder {
 }
 
 .icon-email::before {
-  content: "\2709";
+  content: '\2709';
 }
 
 .icon-key::before {
-  content: "\1F511";
+  content: '\1F511';
 }
 
 .icon-lock::before {
-  content: "\1F512";
+  content: '\1F512';
 }
 
 .icon-user::before {
-  content: "\1F464";
+  content: '\1F464';
 }
 
 .icon-phone::before {
-  content: "\260E";
+  content: '\260E';
 }
 
 /* Verify Button */
@@ -643,7 +662,7 @@ input::placeholder {
   height: 58px;
   width: 140px;
   font-size: 22px;
-  background-color: #66B56B;
+  background-color: #66b56b;
   color: white;
   border: 0px solid #757575;
   cursor: pointer;
@@ -659,7 +678,7 @@ input::placeholder {
 .signup-button {
   width: 100%;
   height: 60px;
-  background-color: #66B56B;
+  background-color: #66b56b;
   color: white;
   border: 0px solid #757575;
   padding: 10px;
@@ -685,7 +704,7 @@ input::placeholder {
 }
 
 .input-success {
-  border-color: #66B56B !important;
+  border-color: #66b56b !important;
   border-width: 2px;
 }
 
@@ -714,7 +733,7 @@ input::placeholder {
 }
 
 .modal-content button {
-  background-color: #66B56B;
+  background-color: #66b56b;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -731,7 +750,7 @@ input::placeholder {
 }
 
 .success {
-  color: #66B56B;
+  color: #66b56b;
   margin-bottom: 0;
 }
 
@@ -766,7 +785,9 @@ body {
   min-height: 100vh;
 }
 
-input:focus {outline: none;}
+input:focus {
+  outline: none;
+}
 
 .phone-status {
   margin-top: 5px;
@@ -808,7 +829,7 @@ input:focus {outline: none;}
 }
 
 .tab-button.active {
-  background-color: #66B56B;
+  background-color: #66b56b;
   color: white;
 }
 
@@ -824,6 +845,6 @@ input:focus {outline: none;}
 
 /* Icon styles */
 .icon-license::before {
-  content: "\1F4C4";
+  content: '\1F4C4';
 }
 </style>
