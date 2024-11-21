@@ -465,7 +465,7 @@ const handleRegisterSuccess = () => {
   border: none;
   cursor: pointer;
   padding: 8px;
-  color: #d1d5db; /* 기본 색상 */
+  color: #dc2626; /* 기본 색상 */
   transition: all 0.2s ease;
 }
 

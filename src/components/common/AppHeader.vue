@@ -54,10 +54,14 @@ const isHomePage = computed(() => route.path === '/')
 
         <!-- 로그인한 경우 -->
         <template v-else>
-          <div class="user-profile">
-            <img :src="userProfile.profileImg" :alt="userProfile.nickname" class="profile-img" />
+          <RouterLink to="/mypage" class="user-profile">
+            <img 
+              :src="userProfile.profileImg" 
+              :alt="userProfile.nickname" 
+              class="profile-img"
+            />
             <span class="nickname">{{ userProfile.nickname }}</span>
-          </div>
+          </RouterLink>
           <button @click="handleLogout" class="btn-logout">로그아웃</button>
         </template>
       </div>
@@ -131,6 +135,13 @@ const isHomePage = computed(() => route.path === '/')
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  text-decoration: none; /* 링크 밑줄 제거 */
+  cursor: pointer;
+}
+
+.user-profile:hover {
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
 }
 
 .profile-img {

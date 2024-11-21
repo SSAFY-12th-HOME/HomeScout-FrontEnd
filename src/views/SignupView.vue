@@ -23,6 +23,13 @@ const isEmailValid = ref(false)
 const isEmailAvailable = ref(false)
 const emailMessage = ref('')
 
+const userType = ref('일반') // 새로 추가: 회원 유형 선택
+const brokerLicense = ref('') // 새로 추가: 공인중개사 자격증 번호
+
+// 자격증 번호 유효성 검사
+const isBrokerLicenseValid = ref(false)
+const brokerLicenseMessage = ref('')
+
 // UI state
 const showModal = ref(false)
 const modalMessage = ref('')
@@ -80,9 +87,8 @@ const validateEmail = debounce(async () => {
   )
 }, 300)
 
-// Form validation 업데이트
 const isFormValid = computed(() => {
-  return email.value &&
+  const baseValidation = email.value &&
     isEmailValid.value &&
     isEmailAvailable.value &&
     isVerified.value &&
@@ -94,6 +100,15 @@ const isFormValid = computed(() => {
     isNicknameAvailable.value &&
     phoneNumber.value &&
     isValidPhoneNumber.value
+
+  // 공인중개사인 경우 추가 검증
+  if (userType.value === '공인중개사') {
+    return baseValidation && 
+           brokerLicense.value && 
+           isBrokerLicenseValid.value
+  }
+
+  return baseValidation
 })
 
 // Password validation function
@@ -190,7 +205,7 @@ const passwordsMatch = computed(() => {
   return password.value && confirmPassword.value && password.value === confirmPassword.value
 })
 
-// Form submission
+// Form submission 수정
 const handleSubmit = async () => {
   if (!isFormValid.value) {
     modalMessage.value = '모든 항목을 입력해주세요.'
@@ -207,7 +222,7 @@ const handleSubmit = async () => {
     passwordConfirm: confirmPassword.value,
     nickname: nickname.value,
     phone: phoneNumber.value,
-    role: '일반'
+    role: userType.value
   }
 
   await new Promise(resolve => setTimeout(resolve, 500))
@@ -257,6 +272,48 @@ const formatPhoneNumber = (event) => {
   // v-model 값 업데이트
   phoneNumber.value = formatted
 }
+
+// 자격증 번호 포맷팅 함수
+const formatBrokerLicense = (event) => {
+  // 입력된 값에서 숫자만 추출
+  let cleaned = event.target.value.replace(/\D/g, '')
+  
+  // 11자리로 제한
+  if (cleaned.length > 11) {
+    cleaned = cleaned.slice(0, 11)
+  }
+  
+  // 포맷팅된 값 생성 (XX-XXXX-XXXXX)
+  let formatted = ''
+  if (cleaned.length >= 2) {
+    formatted += cleaned.slice(0, 2)
+    if (cleaned.length >= 6) {
+      formatted += '-' + cleaned.slice(2, 6)
+      if (cleaned.length >= 7) {
+        formatted += '-' + cleaned.slice(6)
+      }
+    } else if (cleaned.length >= 2) {
+      formatted += '-' + cleaned.slice(2)
+    }
+  } else {
+    formatted = cleaned
+  }
+  
+  // 자격증 번호 유효성 검사 (11자리)
+  const licenseRegex = /^\d{11}$/
+  isBrokerLicenseValid.value = licenseRegex.test(cleaned)
+  
+  if (isBrokerLicenseValid.value) {
+    brokerLicenseMessage.value = '유효한 자격증 번호 형식입니다.'
+  } else {
+    brokerLicenseMessage.value = cleaned.length === 11 ? 
+      '유효하지 않은 자격증 번호입니다.' : 
+      '자격증 번호 11자리를 입력해주세요.'
+  }
+  
+  // v-model 값 업데이트
+  brokerLicense.value = formatted
+}
 </script>
 
 <template>
@@ -274,6 +331,48 @@ const formatPhoneNumber = (event) => {
 
     <!-- Form Section -->
     <form class="signup-form" @submit.prevent="handleSubmit">
+      <!-- User Type Selection Tabs -->
+      <div class="user-type-tabs">
+        <button 
+          type="button"
+          :class="['tab-button', { active: userType === '일반' }]"
+          @click="userType = '일반'"
+        >
+          일반 회원
+        </button>
+        <button 
+          type="button"
+          :class="['tab-button', { active: userType === '공인중개사' }]"
+          @click="userType = '공인중개사'"
+        >
+          공인중개사
+        </button>
+      </div>
+      <!-- Broker License Input -->
+      <template v-if="userType === '공인중개사'">
+        <div class="form-group">
+          <div class="input-wrapper">
+            <i class="icon-license"></i>
+            <input
+              type="text"
+              v-model="brokerLicense"
+              placeholder="공인중개사 자격증 번호를 입력하세요"
+              class="input-field"
+              :class="{
+                'input-success': isBrokerLicenseValid && brokerLicense,
+                'input-error': !isBrokerLicenseValid && brokerLicense
+              }"
+              :disabled="isBrokerLicenseValid && brokerLicense"
+              @input="formatBrokerLicense"
+              maxlength="13"
+            />
+          </div>
+          <p class="license-status" v-if="brokerLicense" 
+            :class="{ 'success': isBrokerLicenseValid, 'error': !isBrokerLicenseValid }">
+            {{ brokerLicenseMessage }}
+          </p>
+        </div>
+      </template>
       <!-- Email Field -->
       <div class="form-group">
         <div class="input-wrapper">
@@ -546,7 +645,7 @@ input::placeholder {
   font-size: 22px;
   background-color: #66B56B;
   color: white;
-  border: 1px solid #757575;
+  border: 0px solid #757575;
   cursor: pointer;
   border-radius: 4px;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
@@ -562,7 +661,7 @@ input::placeholder {
   height: 60px;
   background-color: #66B56B;
   color: white;
-  border: 1px solid #757575;
+  border: 0px solid #757575;
   padding: 10px;
   font-size: 28px;
   cursor: pointer;
@@ -685,5 +784,46 @@ input:focus {outline: none;}
   justify-content: center;
   align-items: center;
   z-index: 1000;
+}
+
+.user-type-tabs {
+  display: flex;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 15px 0;
+  border: none;
+  background-color: #f5f5f5;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: #757575;
+  transition: all 0.3s ease;
+}
+
+.tab-button.active {
+  background-color: #66B56B;
+  color: white;
+}
+
+.tab-button:hover:not(.active) {
+  background-color: #e0e0e0;
+}
+
+/* License status style */
+.license-status {
+  margin-top: 5px;
+  font-size: 14px;
+}
+
+/* Icon styles */
+.icon-license::before {
+  content: "\1F4C4";
 }
 </style>

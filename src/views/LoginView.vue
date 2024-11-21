@@ -176,7 +176,7 @@ const handleLogin = async () => {
   padding: 12px;
   background-color: #66b56b;
   color: white;
-  border: 1px solid #757575;
+  border: 0px solid #757575;
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;

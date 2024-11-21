@@ -6,6 +6,11 @@ import DealHistory from '@/components/map/DealHistory.vue';
 import SubwayInfo from '@/components/map/SubwayInfo.vue';
 import LifeStory from '@/components/map/LifeStory.vue';
 import SaleList from '@/components/map/SaleList.vue';
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
+import ErrorModal from '../common/ErrorModal.vue';
+import { useErrorStore } from '@/stores/error';
+
+const errorStore = useErrorStore()
 
 const props = defineProps({
     aptId: {
@@ -15,18 +20,22 @@ const props = defineProps({
 
 const apt = ref('');
 const aptInfo = ref({});
+const isLoading = ref(false)
 
 // getAptInfo를 별도의 함수로 분리
 const fetchAptInfo = () => {
     if (!apt.value) return;
+    isLoading.value = true
     
     getAptInfo(
         apt.value,
         ({ data }) => {
             aptInfo.value = data;
+            isLoading.value = false
         },
         (err) => {
-            console.log(err);
+            isLoading.value = false
+            errorStore.showError(err.response.data.message)
         }
     );
 };
@@ -46,6 +55,10 @@ const handleRefresh = () => {
 </script>
 
 <template>
+    <ErrorModal />
+    <div class="loading" v-if="isLoading">
+      <PulseLoader/>
+    </div>
     <div class="container">
         <h2 v-if="apt.length === 0" class="empty-message">아파트를 선택해 주세요!</h2>
         <div v-else class="apt-container">

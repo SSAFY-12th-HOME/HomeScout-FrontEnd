@@ -5,6 +5,10 @@ import { getAptList, listSido, listGugun, getAptIdByAptName } from '@/api/map';
 import AptDetail from '@/components/map/AptDetail.vue';
 import VSelect from '@/components/map/VSelect.vue';
 import SearchBar from '@/components/map/SearchBar.vue';
+import ErrorModal from '@/components/common/ErrorModal.vue';
+import { useErrorStore } from '@/stores/error';
+
+const errorStore = useErrorStore()
 
 const aptList = ref([]);
 const aptId = ref('');
@@ -74,13 +78,14 @@ const onSearchApt = (searchQuery) => {
       aptList.value = [data];
     },
     (err) => {
-      console.log(err);
+      errorStore.showError(err.response.data.message)
     }
   )
 }
 </script>
 
 <template>
+  <ErrorModal />
   <div class="tab-container">
     <SearchBar @onSearchButton="onSearchApt"/>
     <AptDetail :apt-id="aptId"/>
