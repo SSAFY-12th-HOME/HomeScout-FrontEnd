@@ -3,30 +3,37 @@ import { RouterLink } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useRoute } from 'vue-router' // 추가
 
 const userStore = useUserStore()
 const router = useRouter()
+const route = useRoute() // 현재 라우트 정보를 가져옴
 
 const isLoggedIn = computed(() => !!userStore.token)
+
 const userProfile = computed(() => ({
   nickname: userStore.nickname,
-  profileImg: userStore.profileImg
+  profileImg: userStore.profileImg,
 }))
 
 const handleLogout = () => {
   userStore.clearUserInfo()
   router.push('/')
 }
+
+// 현재 라우트가 홈 페이지('/')인지 확인
+const isHomePage = computed(() => route.path === '/')
 </script>
 
 <template>
-  <header class="header">
+  <header class="header" v-if="!isHomePage">
+    <!-- 홈 이외의 페이지에서는 해당 nav 로 설정 -->
     <div class="header-container">
       <!-- Logo Section -->
       <RouterLink to="/" class="logo">
-        <img src="@/assets/home-scout-logo-green.png" alt="Home Scout" width=140 />
+        <img src="@/assets/home-scout-logo-green.png" alt="Home Scout" width="140" />
       </RouterLink>
-      
+
       <!-- Navigation Menu -->
       <nav class="nav-menu">
         <ul>
@@ -44,15 +51,11 @@ const handleLogout = () => {
           <RouterLink to="/login" class="btn-login">로그인</RouterLink>
           <RouterLink to="/signup" class="btn-signup">회원가입</RouterLink>
         </template>
-        
+
         <!-- 로그인한 경우 -->
         <template v-else>
           <div class="user-profile">
-            <img 
-              :src="userProfile.profileImg" 
-              :alt="userProfile.nickname" 
-              class="profile-img"
-            />
+            <img :src="userProfile.profileImg" :alt="userProfile.nickname" class="profile-img" />
             <span class="nickname">{{ userProfile.nickname }}</span>
           </div>
           <button @click="handleLogout" class="btn-logout">로그아웃</button>

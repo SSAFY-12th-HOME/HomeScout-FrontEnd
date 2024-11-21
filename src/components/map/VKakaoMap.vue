@@ -5,7 +5,7 @@ import { getPodcastData } from '@/api/map' // API 요청 함수
 
 const podcastUrl = ref()
 const isModalVisible = ref(false) // 모달창을 표시할 변수
-const isPlaying = ref(false) // 오디오 재생 상태 변수
+const isPlaying = ref(true) // 오디오 재생 상태 변수
 const currentDistrictName = ref('') // 동적으로 설정할 "시군구" 이름
 const podcastVideoUrl = ref('/src/assets/Animation - 1732081428240.webm') // 비디오 파일 경로
 
@@ -110,7 +110,7 @@ const navigateToNews = async () => {
 
 const closeModal = () => {
   isModalVisible.value = false // 모달창 닫기
-  isPlaying.value = false // 오디오 재생 상태를 초기화
+  isPlaying.value = true // 오디오 재생 상태를 초기화
   progress.value = 0 // 진행 상태 바 초기화
   currentTime.value = '0:00' // 현재 시간 초기화
   duration.value = '0:00' // 전체 시간 초기화
@@ -218,6 +218,7 @@ const onLoadedMetadata = () => {
           @timeupdate="onTimeUpdate"
           @ended="closeModal"
           @loadedmetadata="onLoadedMetadata"
+          autoplay
           controls
         />
       </div>
