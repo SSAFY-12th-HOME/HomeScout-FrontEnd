@@ -7,13 +7,37 @@ import ProfileEdit from '@/components/mypage/ProfileEdit.vue'
 import { getMypage } from '@/api/mypage'
 import { useErrorStore } from '@/stores/error'
 import ErrorModal from '@/components/common/ErrorModal.vue'
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
+import { uploadImage } from '@/api/mypage'
+import { useUserStore } from '@/stores/user'
 
 const errorStore = useErrorStore()
+const userStore = useUserStore()
 
 const activeTab = ref('favorite')
 const userProfile = ref({})
+const fileInput = ref(null) // 파일 input 요소 참조
+const isUploading = ref(false) // 업로드 상태 관리
+
+const tabs = ref([
+  ])
 
 const fetchUserProfile = async () => {
+  if(userStore.role === '공인중개사') {
+    tabs.value = [
+      { id: 'favorite', name: '관심 매물' },
+      { id: 'my-properties', name: '나의 매물' },
+      { id: 'quiz', name: '퀴즈 내역' },
+      { id: 'edit', name: '정보 수정' },
+    ]
+  } else {
+    tabs.value = [
+      { id: 'favorite', name: '관심 매물' },
+      { id: 'edit', name: '정보 수정' },
+    ]
+  }
+
+
 	getMypage(
 		({ data }) => {
 			userProfile.value = data
@@ -37,12 +61,52 @@ onMounted(() => {
   fetchUserProfile()
 })
 
-const tabs = [
-  { id: 'favorite', name: '관심 매물' },
-  { id: 'my-properties', name: '나의 매물' },
-  { id: 'quiz', name: '퀴즈 내역' },
-  { id: 'edit', name: '정보 수정' }
-]
+// 파일 선택 시 실행되는 함수
+const handleFileChange = async (event) => {
+  const file = event.target.files[0]
+  if (!file) return
+
+  // 파일 유효성 검사
+  if (!file.type.includes('image/')) {
+    console.log('이미지 파일만 업로드할 수 있습니다.')
+    errorStore.showError('이미지 파일만 업로드할 수 있습니다.')
+    return
+  }
+
+  // 파일 크기 제한 (예: 5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    console.log('파일 크기는 5MB 이하여야 합니다.')
+    errorStore.showError('파일 크기는 5MB 이하여야 합니다.')
+    return
+  }
+
+  isUploading.value = true
+  const formData = new FormData()
+  formData.append('file', file)
+
+  uploadImage(
+    formData,
+    ({ data }) => {
+      // 스토어와 로컬 상태 업데이트
+      userProfile.value.profileImg = data.imgUrl
+      userStore.profileImg = data.imgUrl
+      isUploading.value = false
+      // 파일 input 초기화
+      if (fileInput.value) {
+        fileInput.value.value = ''
+      }
+    },
+    (error) => {
+      console.log(error)
+      errorStore.showError('이미지 업로드에 실패했습니다.')
+      isUploading.value = false
+      // 파일 input 초기화
+      if (fileInput.value) {
+        fileInput.value.value = ''
+      }
+    }
+  )
+}
 </script>
 
 <template>
@@ -50,16 +114,44 @@ const tabs = [
   <div class="mypage">
     <!-- 프로필 헤더 -->
     <div class="profile-header">
-      <div class="profile-info">
-        <div class="profile-image-container">
-          <img :src="userProfile.profileImg" :alt="userProfile.nickname" class="profile-image">
-          <span v-if="userProfile.isBadge" class="badge">🌟</span>
+      <!-- 숨겨진 파일 input -->
+      <input
+        ref="fileInput"
+        type="file"
+        accept="image/*"
+        class="hidden"
+        @change="handleFileChange"
+      />
+        
+      <div class="profile-section">
+        <span v-if="userProfile.isBadge" class="badge">
+          <img src="/src/assets/badge.png" width="45">
+        </span>
+        <div 
+          class="profile-image-container"
+          @click="fileInput.click()"
+          :class="{ 'uploading': isUploading }"
+        >
+        <img 
+          :src="userProfile.profileImg" 
+          :alt="userProfile.nickname" 
+          class="profile-image"
+        />
+        <div class="image-overlay">
+          <span class="upload-text">이미지 변경</span>
         </div>
-        <div class="user-info">
-          <h2 class="nickname">{{ userProfile.nickname }}</h2>
-          <p class="email">{{ userProfile.email }}</p>
+        
+        <div v-if="isUploading">
+          <PulseLoader />
         </div>
       </div>
+
+      <div class="user-info">
+        <h2 class="nickname">{{ userProfile.nickname }}</h2>
+        <p class="email">{{ userProfile.email }}</p>
+      </div>
+    </div>
+
       <!-- 경험치 바 수정 -->
       <div class="exp-container">
         <div class="exp-bar-wrapper">
@@ -112,46 +204,72 @@ const tabs = [
 
 .profile-header {
   background-color: white;
-  padding: 1rem;
+  padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
-.profile-info {
+/* 새로 추가된 profile-section */
+.profile-section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  text-align: center;
+  margin-bottom: 1rem; /* exp-container와의 간격 확보 */
 }
 
 .profile-image-container {
+  width: 120px;
+  height: 120px;
   position: relative;
-  margin-bottom: 0.5rem;
+  cursor: pointer;
+  border-radius: 50%;
+  overflow: hidden;
 }
 
 .profile-image {
-  width: 100px;  /* 이미지 크기 약간 키움 */
-  height: 100px;
-  border-radius: 50%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
 .badge {
   position: absolute;
-  bottom: 0;
-  right: 0;
+  top: 17%;
+  left: 44.5%;
   font-size: 1.5rem;
+  z-index: 5;
 }
 
-.user-info {
+/* 이미지 오버레이 관련 스타일 */
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.profile-image-container:hover .image-overlay {
+  opacity: 1;
+}
+
+.upload-text {
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* 유저 정보 스타일 */
+.user-info {
+  text-align: center;
+  margin-top: 1rem;
 }
 
 .nickname {
@@ -164,15 +282,16 @@ const tabs = [
 .email {
   color: #666;
   font-size: 0.9rem;
-  margin: 0;
+  margin: 0.25rem 0 0 0;
 }
 
+/* 경험치 바 관련 스타일 */
 .exp-container {
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
   position: relative;
-  padding: 2rem 0 1rem; /* 말풍선을 위한 상단 여백 추가 */
+  padding: 2rem 0 1rem;
 }
 
 .exp-bar-wrapper {
@@ -313,6 +432,7 @@ const tabs = [
   font-size: 0.9rem;
 }
 
+/* 탭 관련 스타일 */
 .tabs {
   display: flex;
   gap: 1rem;
@@ -338,6 +458,86 @@ const tabs = [
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 1rem;
+  padding: 2rem;
+}
+
+.hidden {
+  display: none;
+}
+
+.profile-info {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.profile-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.profile-image-container {
+  width: 120px;  /* 크기 고정 */
+  height: 120px; /* 크기 고정 */
+  position: relative;
+  cursor: pointer;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto; /* 중앙 정렬을 위해 추가 */
+}
+
+.profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-info {
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.nickname {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.email {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0.25rem 0 0 0;
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.profile-image-container:hover .image-overlay {
+  opacity: 1;
+}
+
+.upload-text {
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.uploading {
+  pointer-events: none;
+  opacity: 0.7;
 }
 </style>

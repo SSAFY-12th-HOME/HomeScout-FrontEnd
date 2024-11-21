@@ -6,6 +6,7 @@ import { login } from '@/api/user'
 
 import ErrorModal from '@/components/common/ErrorModal.vue'
 import { useErrorStore } from '@/stores/error'
+import { Lock, Mail } from 'lucide-vue-next';
 
 const errorStore = useErrorStore()
 const userStore = useUserStore()
@@ -64,13 +65,18 @@ const handleLogin = async () => {
 
     <!-- Email Input -->
     <div class="input-container">
-      <img src="@/assets/EmailIcon.svg" alt="Email Icon" class="input-icon" />
-      <input v-model="email" type="email" placeholder="이메일을 입력하세요." class="input-box" />
+      <span class="input-icon"><Mail size="18" stroke-width="2.25"/></span>
+      <input
+        v-model="email"
+        type="email"
+        placeholder="이메일을 입력하세요."
+        class="input-box"
+      />
     </div>
 
     <!-- Password Input -->
     <div class="input-container">
-      <img src="@/assets/PasswordIcon.svg" alt="Password Icon" class="input-icon" />
+      <span class="input-icon"><Lock size="18" stroke-width="2.25"/></span>
       <input
         v-model="password"
         type="password"
@@ -141,10 +147,8 @@ const handleLogin = async () => {
 .input-icon {
   position: absolute;
   left: 10px;
-  top: 50%;
+  top: 47%;
   transform: translateY(-50%);
-  width: 20px; /* Adjust icon size */
-  height: 20px;
 }
 
 /* Container to align find-password button to the right */

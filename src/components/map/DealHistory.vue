@@ -45,10 +45,10 @@ watch(
 <style scoped>
 .real-transaction {
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-  margin: 0;
+  margin: 0px 7px;
+
   background-color: #ffffff;
   border-radius: 16px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   padding: 20px;
 }
 

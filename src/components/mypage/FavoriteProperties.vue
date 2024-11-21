@@ -95,7 +95,10 @@ const getPrice = (type, price, deposit, rentalFee) => {
     </div>
   </Transition>
   <div class="favorites">
-    <div class="properties-grid">
+    <div v-if="favorites.length === 0" class="empty-state">
+      관심 매물이 없습니다.
+    </div>
+    <div v-else class="properties-grid">
       <!-- Property List -->
       <div v-for="property in favorites" :key="property.saleId" class="property-card">
         <div class="property-header">
@@ -152,7 +155,7 @@ const getPrice = (type, price, deposit, rentalFee) => {
 .properties-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  gap: 3rem;
   padding: 1rem;
 }
 
@@ -160,9 +163,8 @@ const getPrice = (type, price, deposit, rentalFee) => {
   background: white;
   border-radius: 12px;
   padding: 16px;
-  margin-bottom: 16px;
   padding-top: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
 }
 
 .property-header {
@@ -411,5 +413,15 @@ const getPrice = (type, price, deposit, rentalFee) => {
 .modal-leave-to {
   opacity: 0;
   transform: translateY(10px) scale(0.99);
+}
+
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 250px;
+  width: 100%;
+  color: #666;
+  font-size: 24px;
 }
 </style>

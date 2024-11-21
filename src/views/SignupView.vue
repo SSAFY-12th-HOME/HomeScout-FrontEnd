@@ -11,7 +11,8 @@ import { ref, computed } from 'vue'
 import { useErrorStore } from '@/stores/error'
 import { useSuccessStore } from '@/stores/success'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
-import SuccessModal from '@/components/common/SuccessModal.vue'
+import SuccessModal from '@/components/common/SuccessModal.vue';
+import { KeyRound, Lock, Mail, Phone, ScrollText, User } from 'lucide-vue-next';
 
 const errorStore = useErrorStore()
 const successStore = useSuccessStore()
@@ -355,7 +356,7 @@ const formatBrokerLicense = (event) => {
       <template v-if="userType === '공인중개사'">
         <div class="form-group">
           <div class="input-wrapper">
-            <i class="icon-license"></i>
+            <span class="input-icon"><ScrollText size="18" stroke-width="2.25"/></span>
             <input
               type="text"
               v-model="brokerLicense"
@@ -382,7 +383,7 @@ const formatBrokerLicense = (event) => {
       <!-- Email Field -->
       <div class="form-group">
         <div class="input-wrapper">
-          <i class="icon-email"></i>
+          <span class="input-icon"><Mail size="18" stroke-width="2.25"/></span>
           <input
             type="email"
             v-model="email"
@@ -419,7 +420,7 @@ const formatBrokerLicense = (event) => {
       <!-- Verification Code Field -->
       <div class="form-group" v-if="showVerificationField">
         <div class="input-wrapper">
-          <i class="icon-key"></i>
+          <span class="input-icon"><KeyRound size="18" stroke-width="2.25"/></span>
           <input
             type="text"
             v-model="verificationCode"
@@ -445,7 +446,7 @@ const formatBrokerLicense = (event) => {
       <!-- Password Field -->
       <div class="form-group">
         <div class="input-wrapper">
-          <i class="icon-lock"></i>
+          <span class="input-icon"><Lock size="18" stroke-width="2.25"/></span>
           <input
             type="password"
             v-model="password"
@@ -469,7 +470,7 @@ const formatBrokerLicense = (event) => {
       <!-- Confirm Password Field -->
       <div class="form-group">
         <div class="input-wrapper">
-          <i class="icon-lock"></i>
+          <span class="input-icon"><Lock size="18" stroke-width="2.25"/></span>
           <input
             type="password"
             v-model="confirmPassword"
@@ -493,7 +494,7 @@ const formatBrokerLicense = (event) => {
       <!-- Nickname Field -->
       <div class="form-group">
         <div class="input-wrapper">
-          <i class="icon-user"></i>
+          <span class="input-icon"><User size="20" stroke-width="2.25"/></span>
           <input
             type="text"
             v-model="nickname"
@@ -518,7 +519,7 @@ const formatBrokerLicense = (event) => {
       <!-- Phone Number Field -->
       <div class="form-group">
         <div class="input-wrapper">
-          <i class="icon-phone"></i>
+          <span class="input-icon"><Phone size="18" stroke-width="2.25"/></span>
           <input
             type="tel"
             v-model="phoneNumber"
@@ -625,34 +626,6 @@ const formatBrokerLicense = (event) => {
 
 input::placeholder {
   color: #aaa;
-}
-
-/* Icons inside the input fields */
-.input-wrapper i {
-  position: absolute;
-  left: 10px;
-  color: #757575;
-  font-style: normal;
-}
-
-.icon-email::before {
-  content: '\2709';
-}
-
-.icon-key::before {
-  content: '\1F511';
-}
-
-.icon-lock::before {
-  content: '\1F512';
-}
-
-.icon-user::before {
-  content: '\1F464';
-}
-
-.icon-phone::before {
-  content: '\260E';
 }
 
 /* Verify Button */
@@ -837,14 +810,11 @@ input:focus {
   background-color: #e0e0e0;
 }
 
-/* License status style */
-.license-status {
-  margin-top: 5px;
-  font-size: 14px;
-}
-
-/* Icon styles */
-.icon-license::before {
-  content: '\1F4C4';
+/* Input icon styling */
+.input-icon {
+  position: absolute;
+  left: 13px;
+  top: 47%;
+  transform: translateY(-50%);
 }
 </style>

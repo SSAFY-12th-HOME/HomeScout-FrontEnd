@@ -14,6 +14,7 @@
     "aos-vue": "^0.0.5",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
+    "lucide-vue-next": "^0.460.0",
     "pinia": "^2.2.6",
     "pinia-plugin-persistedstate": "^4.1.3",
     "swiper": "^11.1.14",
@@ -21,7 +22,8 @@
     "vue-fullpage.js": "^0.2.20",
     "vue-router": "^4.4.5",
     "vue-spinner": "^1.0.4",
-    "vue3-kakao-maps": "^2.3.10"
+    "vue3-kakao-maps": "^2.3.10",
+    "vue3-perfect-scrollbar": "^2.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.14.0",

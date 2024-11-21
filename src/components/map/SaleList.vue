@@ -195,87 +195,95 @@ const handleRegisterSuccess = () => {
     </div>
   </Transition>
 
-  <div class="sale-header">
-    <h2>이 단지 매물</h2>
-    <button v-if="userStore.role === '공인중개사'" class="register-button" @click="showRegisterModal = true">
-      매물 등록
-    </button>
-  </div>
-  <div class="property-list">
-    <!-- Empty State -->
-    <div v-if="isEmpty" class="empty-state">
-      <div class="empty-state-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 21h18" />
-          <path d="M5 21V7l8-4v18" />
-          <path d="M19 21V11l-6-4" />
-          <path d="M9 9h1v1H9z" />
-          <path d="M9 12h1v1H9z" />
-          <path d="M9 15h1v1H9z" />
-          <path d="M9 18h1v1H9z" />
-          <path d="M14 14h1v1h-1z" />
-          <path d="M14 17h1v1h-1z" />
-        </svg>
-      </div>
-      <p class="empty-state-text">{{ emptyStateMessage }}</p>
-      <button v-if="userStore.role === '공인중개사'" class="empty-state-button" @click="showRegisterModal = true">
-        매물 등록하기
+  <div class="property-container">
+    <div class="sale-header">
+      <h2>이 단지 매물</h2>
+      <button v-if="userStore.role === '공인중개사'" class="register-button" @click="showRegisterModal = true">
+        매물 등록
       </button>
     </div>
-
-    <!-- Property List -->
-    <div v-else v-for="property in properties" :key="property.saleId" class="property-card">
-      <div class="property-header">
-        <h3 class="price">
-          {{ getPrice(property.type, property.price, property.deposit, property.rentalFee) }}
-        </h3>
-        <button 
-          class="heart-btn" 
-          @click="handleWishToggle(property.saleId, property.isWish)"
-          :class="{ 'heart-active': property.isWish }"
-        >
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            width="24" 
-            height="24" 
-            viewBox="0 0 24 24" 
-            :fill="property.isWish ? 'currentColor' : 'none'" 
-            stroke="currentColor" 
-            stroke-width="2" 
-            stroke-linecap="round" 
-            stroke-linejoin="round"
-          >
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"></path>
+    <div class="property-list">
+      <!-- Empty State -->
+      <div v-if="isEmpty" class="empty-state">
+        <div class="empty-state-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 21h18" />
+            <path d="M5 21V7l8-4v18" />
+            <path d="M19 21V11l-6-4" />
+            <path d="M9 9h1v1H9z" />
+            <path d="M9 12h1v1H9z" />
+            <path d="M9 15h1v1H9z" />
+            <path d="M9 18h1v1H9z" />
+            <path d="M14 14h1v1h-1z" />
+            <path d="M14 17h1v1h-1z" />
           </svg>
+        </div>
+        <p class="empty-state-text">{{ emptyStateMessage }}</p>
+        <button v-if="userStore.role === '공인중개사'" class="empty-state-button" @click="showRegisterModal = true">
+          매물 등록하기
         </button>
       </div>
 
-      <div class="property-info">
-        <p>{{ property.dong }}동 {{ property.floor }}층 {{ property.area }}㎡</p>
-        <div class="tags">
-          <span class="tag" v-if="property.tag1.length !== 0">#{{ property.tag1 }}</span>
-          <span class="tag" v-if="property.tag2.length !== 0">#{{ property.tag2 }}</span>
-          <span class="tag" v-if="property.tag3.length !== 0">#{{ property.tag3 }}</span>
+      <!-- Property List -->
+      <div v-else v-for="property in properties" :key="property.saleId" class="property-card">
+        <div class="property-header">
+          <h3 class="price">
+            {{ getPrice(property.type, property.price, property.deposit, property.rentalFee) }}
+          </h3>
+          <button 
+            class="heart-btn" 
+            @click="handleWishToggle(property.saleId, property.isWish)"
+            :class="{ 'heart-active': property.isWish }"
+          >
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              width="24" 
+              height="24" 
+              viewBox="0 0 24 24" 
+              :fill="property.isWish ? 'currentColor' : 'none'" 
+              stroke="currentColor" 
+              stroke-width="2" 
+              stroke-linecap="round" 
+              stroke-linejoin="round"
+            >
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+          </button>
         </div>
-      </div>
 
-      <div class="agent-info">
-        <div class="agent">
-          <img src="/src/assets/default-profile-img.png" :alt="property.realtor.nickname" class="agent-image">
-          <span class="agent-name">{{ property.realtor.nickname }}</span>
+        <div class="property-info">
+          <p>{{ property.dong }}동 {{ property.floor }}층 {{ property.area }}㎡</p>
+          <div class="tags">
+            <span class="tag" v-if="property.tag1.length !== 0">#{{ property.tag1 }}</span>
+            <span class="tag" v-if="property.tag2.length !== 0">#{{ property.tag2 }}</span>
+            <span class="tag" v-if="property.tag3.length !== 0">#{{ property.tag3 }}</span>
+          </div>
         </div>
-        <span class="agent-phone">{{ property.realtor.phone }}</span>
-      </div>
 
-      <button class="contact-btn" @click="contactAgent(property.realtor.userId)">
-        문의
-      </button>
+        <div class="agent-info">
+          <div class="agent">
+            <img src="/src/assets/default-profile-img.png" :alt="property.realtor.nickname" class="agent-image">
+            <span class="agent-name">{{ property.realtor.nickname }}</span>
+          </div>
+          <span class="agent-phone">{{ property.realtor.phone }}</span>
+        </div>
+
+        <button class="contact-btn" @click="contactAgent(property.realtor.userId)">
+          문의
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
 /* 기존 스타일 유지 */
+.property-container {
+  border-radius: 12px;
+  background-color: white;
+  margin: 0 7px;
+}
+
 .sale-header {
   display: flex;
   justify-content: space-between;
@@ -306,7 +314,7 @@ const handleRegisterSuccess = () => {
   height: 32px;
   display: flex;
   align-items: center;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 3px 1px rgba(0, 0, 0, 0.05);
 }
 
 .register-button:hover {
@@ -335,7 +343,7 @@ const handleRegisterSuccess = () => {
   padding: 16px;
   margin-bottom: 16px;
   padding-top: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
 }
 
 .property-header {

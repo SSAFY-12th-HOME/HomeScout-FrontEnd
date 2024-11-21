@@ -201,6 +201,8 @@ watch(
 .review-container {
   padding: 1rem;
   background-color: white;
+  border-radius: 12px;
+  margin: 0 7px;
 }
 
 .review-header {
@@ -210,7 +212,7 @@ watch(
 .header-left {
   display: flex;
   align-items: center;
-  gap: 6.7rem;
+  gap: 8rem;
 }
 
 .header-left h2 {

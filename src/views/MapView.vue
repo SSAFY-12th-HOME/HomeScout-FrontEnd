@@ -86,30 +86,45 @@ const onSearchApt = (searchQuery) => {
 
 <template>
   <ErrorModal />
-  <div class="tab-container">
-    <SearchBar @onSearchButton="onSearchApt"/>
-    <AptDetail :apt-id="aptId"/>
-  </div>
-  <div class="map-container">
-    <div class="select-container">
-      <VSelect style="float: left; height: 36px; margin: 0 10px" :selectOption="sidoList" @onKeySelect="onChangeSido" />
-      <VSelect style="float: right; height: 36px; margin: 0 10px" :selectOption="gugunList" @onKeySelect="onChangeGugun" />
+  <div class="main-container">
+    <div class="tab-container">
+      <SearchBar @onSearchButton="onSearchApt"/>
+      <AptDetail :apt-id="aptId"/>
     </div>
-    <VKakaoMap :apt-list="aptList" @marker-click-event="onMarkerClickEvent" />
+    <div class="map-container">
+      <div class="select-container">
+        <VSelect style="float: left; height: 36px; margin: 0 10px" :selectOption="sidoList" @onKeySelect="onChangeSido" />
+        <VSelect style="float: right; height: 36px; margin: 0 10px" :selectOption="gugunList" @onKeySelect="onChangeGugun" />
+      </div>
+      <VKakaoMap :apt-list="aptList" @marker-click-event="onMarkerClickEvent" />
+    </div>
   </div>
 </template>
 
 <style scoped>
+.main-container {
+  display: flex;
+  width: 100%;
+  height: 90vh;
+  position: relative;
+}
+
 .tab-container {
-  width: 25%;
-  float: left;
-  background-color: white;
+  flex: 0 0 25%; /* flex-grow: 0, flex-shrink: 0, flex-basis: 25% */
+  background-color: rgb(234, 234, 234);
+  box-shadow: 6px 0 8px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  overflow-y: auto;
+  position: relative;
+  z-index: 2;
 }
 
 .map-container {
-  width: 75%;
-  float: right;
+  flex: 1; /* flex-grow: 1, flex-shrink: 1, flex-basis: 0% */
   background-color: white;
+  position: relative;
+  z-index: 1;
+  height: 100%;
 }
 
 .select-container {

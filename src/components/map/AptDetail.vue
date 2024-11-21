@@ -9,6 +9,7 @@ import SaleList from '@/components/map/SaleList.vue';
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import ErrorModal from '../common/ErrorModal.vue';
 import { useErrorStore } from '@/stores/error';
+import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
 
 const errorStore = useErrorStore()
 
@@ -59,57 +60,51 @@ const handleRefresh = () => {
     <div class="loading" v-if="isLoading">
       <PulseLoader/>
     </div>
-    <div class="container">
-        <h2 v-if="apt.length === 0" class="empty-message">아파트를 선택해 주세요!</h2>
-        <div v-else class="apt-container">
-            <AptInfo :apt-info="aptInfo.aptInfo"/>
-            <div class="divider"></div>
-            <DealHistory :deal-history-props="aptInfo.dealHistory" />
-            <div class="divider"></div>
-            <SubwayInfo :subway-list-props="aptInfo.subway"/>
-            <div class="divider"></div>
-            <SaleList :sale-list-props="aptInfo.sale" :apt-id-props="aptInfo.aptId" @refresh="handleRefresh"/>
-            <div class="divider"></div>
-            <LifeStory :life-story-props="aptInfo.lifeStory" :apt-id-props="aptInfo.aptId" @refresh="handleRefresh"/>
+    <PerfectScrollbar >
+        <div v-if="apt.length === 0" class="container" style="background-color: white">
+            <h2 class="empty-message">아파트를 선택해 주세요!</h2>
         </div>
-    </div>
+        <div v-else class="container">
+            <div class="apt-container">
+                <AptInfo :apt-info="aptInfo.aptInfo"/>
+                <div class="divider"></div>
+                <DealHistory :deal-history-props="aptInfo.dealHistory" />
+                <div class="divider"></div>
+                <SubwayInfo :subway-list-props="aptInfo.subway"/>
+                <div class="divider"></div>
+                <SaleList :sale-list-props="aptInfo.sale" :apt-id-props="aptInfo.aptId" @refresh="handleRefresh"/>
+                <div class="divider"></div>
+                <LifeStory :life-story-props="aptInfo.lifeStory" :apt-id-props="aptInfo.aptId" @refresh="handleRefresh"/>
+                <div class="divider"></div>
+            </div>
+        </div>
+    </PerfectScrollbar >
 </template>
 
 <style scoped>
+
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+@import 'vue3-perfect-scrollbar/style.css';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+  word-break: break-all;
+  font-family: Pretendard;
+}
 .container {
     /* 컨테이너의 높이를 뷰포트 높이로 설정 */
-    height: 81.9vh;
+    height: 78.9vh;
     /* 또는 특정 높이로 설정할 수 있습니다 */
     /* height: 800px; */
     padding: 0 0;
 }
 
 .apt-container {
-    /* 컨테이너 내부 스크롤을 위한 설정 */
+    /* 컨테이너 기본 설정 */
     height: 100%;
-    overflow-y: auto;
-    
-    /* 스크롤바 스타일링 */
-    scrollbar-width: thin; /* Firefox */
-    scrollbar-color: #bbbbbb #f1f1f1; /* Firefox */
-}
-
-/* Webkit 브라우저(Chrome, Safari 등)를 위한 스크롤바 스타일링 */
-.apt-container::-webkit-scrollbar {
-    width: 6px;
-}
-
-.apt-container::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-.apt-container::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 3px;
-}
-
-.apt-container::-webkit-scrollbar-thumb:hover {
-    background: #555;
 }
 
 .divider {

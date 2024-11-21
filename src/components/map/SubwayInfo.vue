@@ -60,9 +60,8 @@ watch(
   padding: 1.5rem;
   border-radius: 1rem;
   background: white;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   max-width: 600px;
-  margin: 0 auto;
+  margin: 0 7px;
 }
 
 .header {

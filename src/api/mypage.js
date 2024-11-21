@@ -1,6 +1,8 @@
 import { localAxios } from '@/util/http-commons';
+import { imageAxios } from '@/util/http-commons';
 
 const local = localAxios();
+const image = imageAxios()
 
 function getTokenHeader() {
 	return 'Bearer ' + JSON.parse(sessionStorage.getItem("user")).token
@@ -18,6 +20,38 @@ async function getMyWishList(success, fail) {
 	await local.get('/sale/wish').then(success).catch(fail)
 }
 
+// 프로필 이미지 업로드
+async function uploadImage(body, success, fail) {
+  image.defaults.headers['Authorization'] = getTokenHeader()
+	await image.post(`/user/image`, body).then(success).catch(fail)
+}
+
+// 나의 매물 불러오기
+async function getMySaleList(success, fail) {
+	local.defaults.headers["Authorization"] = getTokenHeader()
+	await local.get('/sale').then(success).catch(fail)
+}
+
+// 매물 삭제
+async function deleteMySale(saleId, success, fail) {
+	local.defaults.headers["Authorization"] = getTokenHeader()
+	await local.delete(`/sale/${saleId}`).then(success).catch(fail)
+}
+
+// 비밀번호 확인
+async function confirmPassword(body, success, fail) {
+	local.defaults.headers["Authorization"] = getTokenHeader()
+	await local.post(`/user/check-password`, body).then(success).catch(fail)
+}
+
+// 회원 정보 수정 조회
+async function getUserInfo(success, fail) {
+	local.defaults.headers["Authorization"] = getTokenHeader()
+	await local.get(`/user`).then(success).catch(fail)
+}
+
+
 export { 
-	getMypage, getMyWishList
+	getMypage, getMyWishList, uploadImage, getMySaleList,
+	deleteMySale, confirmPassword, getUserInfo
 };
