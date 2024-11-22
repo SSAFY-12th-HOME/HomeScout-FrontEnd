@@ -89,7 +89,7 @@ const onSearchApt = (searchQuery) => {
   <div class="main-container">
     <div class="tab-container">
       <SearchBar @onSearchButton="onSearchApt"/>
-      <AptDetail :apt-id="aptId"/>
+      <AptDetail :apt-id="aptId" />
     </div>
     <div class="map-container">
       <div class="select-container">

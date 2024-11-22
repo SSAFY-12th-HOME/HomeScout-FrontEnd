@@ -9,7 +9,7 @@ import SaleList from '@/components/map/SaleList.vue';
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import ErrorModal from '../common/ErrorModal.vue';
 import { useErrorStore } from '@/stores/error';
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
+// import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
 
 const errorStore = useErrorStore()
 
@@ -39,6 +39,9 @@ const fetchAptInfo = () => {
             errorStore.showError(err.response.data.message)
         }
     );
+
+  document.querySelector('.ps--active-y').scrollTo(0,0)
+    
 };
 
 watch(
@@ -84,7 +87,7 @@ const handleRefresh = () => {
 <style scoped>
 
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
-@import 'vue3-perfect-scrollbar/style.css';
+/* @import 'vue3-perfect-scrollbar/style.css'; */
 
 * {
   margin: 0;

@@ -3,11 +3,11 @@ import { RouterLink } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useRoute } from 'vue-router' // 추가
+// import { useRoute } from 'vue-router' // 추가
 
 const userStore = useUserStore()
 const router = useRouter()
-const route = useRoute() // 현재 라우트 정보를 가져옴
+// const route = useRoute() // 현재 라우트 정보를 가져옴
 
 const isLoggedIn = computed(() => !!userStore.token)
 
@@ -22,7 +22,7 @@ const handleLogout = () => {
 }
 
 // 현재 라우트가 홈 페이지('/')인지 확인
-const isHomePage = computed(() => route.path === '/')
+// const isHomePage = computed(() => route.path === '/')
 </script>
 
 <template>
@@ -53,10 +53,14 @@ const isHomePage = computed(() => route.path === '/')
 
         <!-- 로그인한 경우 -->
         <template v-else>
-          <div class="user-profile">
-            <img :src="userProfile.profileImg" :alt="userProfile.nickname" class="profile-img" />
+          <RouterLink to="/mypage" class="user-profile">
+            <img 
+              :src="userProfile.profileImg" 
+              :alt="userProfile.nickname" 
+              class="profile-img"
+            />
             <span class="nickname">{{ userProfile.nickname }}</span>
-          </div>
+          </RouterLink>
           <button @click="handleLogout" class="btn-logout">로그아웃</button>
         </template>
       </div>

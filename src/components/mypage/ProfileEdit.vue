@@ -271,7 +271,7 @@ const verifyPassword = () => {
 .input-icon {
   position: absolute;
   left: 12px;
-  top: 10px;
+  top: 21px;
   font-size: 16px;
   color: #666;
 }
