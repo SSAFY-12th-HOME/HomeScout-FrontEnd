@@ -6,7 +6,12 @@ import { registerWishSale, removeWishSale } from '@/api/map'
 import SaleRegisterModal from '@/components/map/SaleRegisterModal.vue'
 import { sendMessage as sendMessageWebSocket } from '@/services/websocket'
 import { useRouter } from 'vue-router'
+import {useChatStore} from "@/stores/chat.js";
+import {useSuccessStore} from "@/stores/success.js";
 
+
+const successStore = useSuccessStore();
+const chatStore = useChatStore();
 const userStore = useUserStore()
 const errorStore = useErrorStore()
 const properties = ref([])
@@ -28,6 +33,9 @@ const props = defineProps({
   aptIdProps: {
     type: String,
   },
+  aptName:{
+    type: String
+  }
 })
 
 const emit = defineEmits(['refresh'])
@@ -110,30 +118,23 @@ const closeConfirmModal = () => {
 
 const contactAgent = async (userId) => {
   console.log(`문의 할 공인중개사 id: ${userId}`)
-
+  console.log(props)
   try {
-    const chatStore = useChatStore()
-
     // 채팅방 생성 및 입장
-    const chatRoomId = await chatStore.createAndEnterChatRoom(userId)
+    //const chatRoomId = await chatStore.createAndEnterChatRoom(userId)
 
     // WebSocket을 통해 첫 메시지 전송
     const message = {
       receiverId: userId,
-      content: '안녕하세요. 매물 문의드립니다.',
+      content: '안녕하세요. '+ props.aptName+' 매물 문의드립니다.',
     }
 
     // WebSocket 메시지 전송
-    sendMessageWebSocket(null, message)
+    sendMessageWebSocket(null, message,null,true)
 
-    console.log('과연!!!!!!!!')
-    // 채팅 화면으로 이동
-    router.push({
-      name: 'ChatRoom',
-      params: { roomId: chatRoomId },
-      query: { receiverId: userId },
-    })
-    console.log('@@@@@@@@@@')
+    successStore.showSuccess('문의가 완료되었습니다.')
+
+
   } catch (error) {
     console.error('채팅 연결 오류:', error)
     errorStore.showError('채팅 연결에 실패했습니다.')

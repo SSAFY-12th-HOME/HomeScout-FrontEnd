@@ -11,6 +11,21 @@ export const useChatStore = defineStore(
   () => {
     const userStore = useUserStore()
     const local = localAxios() // Axios 인스턴스 생성
+    const showChatList = ref(false)
+
+    const toggleChatList = () => {
+      console.log(showChatList.value)
+      showChatList.value = !showChatList.value
+      hasNewChat.value = false;
+    }
+
+    const hasNewChat = ref(false)
+    const setHasNewChat = () => {
+      if(showChatList.value){
+        return
+      }
+      hasNewChat.value = true
+    }
 
     // 상태 (state)
     const chatRooms = ref([]) // 사용자가 참여한 채팅방 목록
@@ -189,6 +204,11 @@ export const useChatStore = defineStore(
       fetchMessages,
       isLoading,
       createChatRoom,
+      toggleChatList,
+      showChatList,
+      setHasNewChat,
+      hasNewChat,
+      createAndEnterChatRoom,
     }
   },
   {

@@ -2,14 +2,14 @@
 // import AppHeader from './components/AppHeader.vue'
 // import AppBody from './components/AppBody.vue'
 
-import { ref } from 'vue'
 import ChatRoomList from '@/components/chat/ChatRoomList.vue'
+import {useChatStore} from "@/stores/chat.js";
 
-const showChatList = ref(false)
+const chatStore = useChatStore()
+const toggleChatList = chatStore.toggleChatList
 
-const toggleChatList = () => {
-  showChatList.value = !showChatList.value
-}
+
+
 </script>
 
 <!-- App.vue -->
@@ -29,13 +29,13 @@ const toggleChatList = () => {
   <!--    </div>-->
   <!-- Floating Chat Button -->
   <!-- Floating button -->
-  <button class="floating-button" @click="toggleChatList">
+  <button class="floating-button" :class="{'new': chatStore.hasNewChat}" @click="toggleChatList">
     <span class="icon">💬</span>
   </button>
 
   <!-- Chat room list component -->
   <transition name="fade">
-    <div v-if="showChatList" class="chat-list-container">
+    <div v-if="chatStore.showChatList" class="chat-list-container">
       <button class="close-button" @click="toggleChatList">×</button>
       <ChatRoomList />
     </div>
@@ -112,5 +112,9 @@ const toggleChatList = () => {
 .fade-enter-to,
 .fade-leave-from {
   opacity: 1;
+}
+
+.new {
+  background-color: red;
 }
 </style>

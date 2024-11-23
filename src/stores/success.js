@@ -7,7 +7,7 @@ export const useSuccessStore = defineStore('success', () => {
     const message = ref('');
     const title = ref('완료');
     const routerPath = ref('');
-    
+
 		function showSuccess(message, routerPath = '') {
       this.message = message
       this.routerPath = routerPath
@@ -19,7 +19,8 @@ export const useSuccessStore = defineStore('success', () => {
       this.message = ''
     }
 
-		return { 
+
+		return {
 			isVisible, message, title, routerPath,
 			showSuccess, hideSuccess
 		}

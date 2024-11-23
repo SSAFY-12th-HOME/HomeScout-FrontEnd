@@ -22,6 +22,7 @@ const props = defineProps({
 const apt = ref('')
 const aptInfo = ref({})
 const isLoading = ref(false)
+const aptName = ref('')
 
 // getAptInfo를 별도의 함수로 분리
 const fetchAptInfo = () => {
@@ -33,6 +34,8 @@ const fetchAptInfo = () => {
     ({ data }) => {
       aptInfo.value = data
       isLoading.value = false
+      aptName.value = aptInfo.value.aptInfo.aptNm;
+      console.log(aptInfo.value.aptInfo.aptNm)
     },
     (err) => {
       isLoading.value = false
@@ -78,6 +81,8 @@ const handleRefresh = () => {
           :sale-list-props="aptInfo.sale"
           :apt-id-props="aptInfo.aptId"
           @refresh="handleRefresh"
+          :apt-name="aptName"
+
         />
         <div class="divider"></div>
         <LifeStory

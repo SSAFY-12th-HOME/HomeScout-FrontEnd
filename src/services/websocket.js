@@ -53,6 +53,7 @@ export const connect = () => {
       stompClient.subscribe(`/queue/messages/${userId}`, (message) => {
         const chatMessage = JSON.parse(message.body) // 메시지 데이터 파싱
 
+
         console.log('수신 메시지:', chatMessage) // 전체 메시지 객체 로그 출력
         console.log('채팅방 번호:', chatMessage.chatRoomId) // chatRoomId
 
@@ -64,13 +65,16 @@ export const connect = () => {
           userId: chatMessage.userId,
           nickname: chatMessage.nickname, // nickname 추가
         }) // Pinia 스토어에 메시지 추가
+
+        chatStore.setHasNewChat()
+
       })
 
       // 사용자 참여 상태를 받을 수 있는 경로를 구독 (예: 온라인 상태 업데이트)
       stompClient.subscribe(`/queue/users/${userId}`, (message) => {
         const userStatus = JSON.parse(message.body)
         console.log('User status update:', userStatus)
-        // 여기서 필요한 로직을 구현할 수 있습니다.
+
       })
 
       // 사용자 추가 이벤트 전송 (채팅 참여 알림)
@@ -100,7 +104,7 @@ export const disconnect = () => {
  * @param {String} [fileUrl=null] - 파일 URL (옵션)
  */
 //sendMessage: 실시간 채팅 메시지를 전송하는 함수
-export const sendMessage = (chatRoomId, messageContent, fileUrl = null) => {
+export const sendMessage = (chatRoomId, messageContent, fileUrl = null, isContact = false) => {
   const pinia = getActivePinia() // 활성 Pinia 인스턴스 가져오기
   const userStore = useUserStore(pinia) // Pinia 사용자 스토어 사용
 
@@ -112,7 +116,7 @@ export const sendMessage = (chatRoomId, messageContent, fileUrl = null) => {
   const userId = userStore.userId // 현재 사용자의 ID
   let receiverId
 
-  if (messageContent.content == '안녕하세요. 매물 문의드립니다.') {
+  if (isContact) {
     receiverId = messageContent.receiverId
     messageContent = messageContent.content
   } else {

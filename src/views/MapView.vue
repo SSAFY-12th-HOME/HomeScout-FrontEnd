@@ -7,8 +7,10 @@ import VSelect from '@/components/map/VSelect.vue';
 import SearchBar from '@/components/map/SearchBar.vue';
 import ErrorModal from '@/components/common/ErrorModal.vue';
 import { useErrorStore } from '@/stores/error';
+import SuccessModal from "@/components/common/SuccessModal.vue";
 
 const errorStore = useErrorStore()
+
 
 const aptList = ref([]);
 const aptId = ref('');
@@ -85,6 +87,7 @@ const onSearchApt = (searchQuery) => {
 </script>
 
 <template>
+  <SuccessModal/>
   <ErrorModal />
   <div class="main-container">
     <div class="tab-container">
