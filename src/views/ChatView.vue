@@ -5,65 +5,6 @@
 import { ref } from 'vue'
 import ChatRoomList from '@/components/chat/ChatRoomList.vue'
 
-const messages = ref([
-  {
-    text: '안녕하세요. 부동산입니다.',
-    profileImage: 'https://picsum.photos/200',
-    timestamp: '오전 9:25',
-    isMyMessage: false,
-    userId: 'user123',
-  },
-  {
-    text: '네, 안녕하세요.',
-    profileImage: '/path/to/user-image.jpg',
-    timestamp: '오전 9:26',
-    isMyMessage: true,
-    userId: 'user-1',
-  },
-  {
-    text: '안녕하세요. 부동산입니다.',
-    profileImage: 'https://picsum.photos/200',
-    timestamp: '오전 9:25',
-    isMyMessage: false,
-    userId: 'user123',
-  },
-  {
-    text: '네, 안녕하세요.',
-    profileImage: '/path/to/user-image.jpg',
-    timestamp: '오전 9:26',
-    isMyMessage: true,
-    userId: 'user-1',
-  },
-  {
-    text: '안녕하세요. 부동산입니다.',
-    profileImage: 'https://picsum.photos/200',
-    timestamp: '오전 9:25',
-    isMyMessage: false,
-    userId: 'user123',
-  },
-  {
-    text: '안녕하세요. 부동산입니다.',
-    profileImage: 'https://picsum.photos/200',
-    timestamp: '오전 9:25',
-    isMyMessage: false,
-    userId: 'user123',
-  },
-  {
-    text: '안녕하세요. 부동산입니다.',
-    profileImage: 'https://picsum.photos/200',
-    timestamp: '오전 9:25',
-    isMyMessage: false,
-    userId: 'user123',
-  },
-  {
-    text: '안녕하세요. 부동산입니다.',
-    profileImage: 'https://picsum.photos/200',
-    timestamp: '오전 9:25',
-    isMyMessage: false,
-    userId: 'user123',
-  },
-])
-
 const showChatList = ref(false)
 
 const toggleChatList = () => {
@@ -141,7 +82,7 @@ const toggleChatList = () => {
   bottom: 90px;
   right: 20px;
   width: 400px;
-  height: 800px;
+  height: 700px;
   border-radius: 10px;
   overflow: hidden;
   z-index: 999;

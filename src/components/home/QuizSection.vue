@@ -48,7 +48,7 @@
           </h3>
           <p class="badge-highlight">퀴즈 등록하고 스카우터 배지를 얻어보세요!</p>
           <div class="profile">
-            <img src="/src/assets/profile.png" alt="Profile" class="profile-image" />
+            <img src="/src/assets/default-profile-img.png" alt="Profile" class="profile-image" />
             <div class="profile-text">
               <p>
                 질 좋은 퀴즈를 등록하고<br />유저들이 퀴즈를 풀 때마다<br />배지를 위한 경험치

@@ -1,83 +1,120 @@
+<!-- src/components/chat/ChatRoomList.vue -->
+
 <script setup>
-import { ref, computed } from 'vue'
+// watch와 nextTick import 추가
+import { computed, onMounted, ref, watch, nextTick } from 'vue'
 import ChatContainer from '@/components/chat/ChatContainer.vue'
+import { useChatStore } from '@/stores/chat'
+import { useUserStore } from '@/stores/user'
+import { sendMessage as sendMessageWebSocket } from '@/services/websocket'
 
-const currentUserId = ref(1) // Set your current user ID
+const chatStore = useChatStore()
+const userStore = useUserStore()
 
-const chatRooms = ref([
-  {
-    id: 1,
-    name: '하나공인중개사',
-    lastMessage: '집 보러 가고 싶어요. 언제 가면 되나요?',
-    profileImage: '/path/to/image.jpg',
-    timestamp: '2일 전',
-    messages: [
-      {
-        text: '안녕하세요',
-        profileImage: '/path/to/image.jpg',
-        timestamp: '오전 10:00',
-        isMyMessage: false,
-        userId: 2
-      }
-      // Add more messages...
-    ]
-  }
-  // Add more rooms...
-])
-
-const activeRoom = ref(null)
-
-const getActiveRoom = computed(() => {
-  return chatRooms.value.find(room => room.id === activeRoom.value)
+// 현재 채팅방의 메시지를 실시간으로 감시하는 computed 속성
+const currentMessages = computed(() => {
+  return chatStore.messages[chatStore.activeRoom] || []
 })
 
-const toggleRoom = (roomId) => {
-  activeRoom.value = roomId
+// 메시지 스크롤 처리를 위한 watch 추가
+// 메시지 상태 감시 추가
+watch(
+  () => chatStore.messages,
+  () => {
+    if (chatStore.activeRoom) {
+      nextTick(() => {
+        const chatContainer = document.querySelector('.chat-messages')
+        if (chatContainer) {
+          chatContainer.scrollTop = chatContainer.scrollHeight
+        }
+      })
+    }
+  },
+  { deep: true },
+)
+
+const currentUserId = computed(() => userStore.userId)
+const chatRooms = computed(() => chatStore.chatRooms)
+const activeRoom = computed(() => chatStore.activeRoom)
+const getActiveRoom = computed(() => {
+  return chatStore.chatRooms.find((room) => room.chatRoomId === chatStore.activeRoom)
+})
+
+// 채팅방 선택 시 호출되는 함수 수정
+const toggleRoom = async (roomId) => {
+  chatStore.activeRoom = roomId
+  await chatStore.fetchMessages(roomId)
+  // 메시지 로드 후 스크롤 처리 추가
+  nextTick(() => {
+    const chatContainer = document.querySelector('.chat-messages')
+    if (chatContainer) {
+      chatContainer.scrollTop = chatContainer.scrollHeight
+    }
+  })
 }
 
+// 채팅방 닫기 함수 수정
 const closeRoom = () => {
-  activeRoom.value = null
+  // 채팅방 목록 새로고침 추가
+  chatStore.fetchChatRooms()
+  chatStore.activeRoom = null
 }
 
-const handleSendMessage = (message) => {
-  const roomIndex = chatRooms.value.findIndex(room => room.id === activeRoom.value)
-  if (roomIndex !== -1) {
-    chatRooms.value[roomIndex].messages.push(message)
-    chatRooms.value[roomIndex].lastMessage = message.text
-    chatRooms.value[roomIndex].timestamp = '방금 전'
-  }
+// 메시지 전송 핸들러 수정
+const handleSendMessage = async (message) => {
+  sendMessageWebSocket(chatStore.activeRoom, message.text)
+
+  await chatStore.addMessage(chatStore.activeRoom, {
+    text: message.text,
+    profileImage: message.isMyMessage
+      ? userStore.profileImg
+      : getActiveRoom.value?.otherUserProfileImg,
+    timestamp: message.timestamp,
+    isMyMessage: true,
+    userId: userStore.userId,
+    nickname: userStore.nickname,
+  })
 }
+
+onMounted(() => {
+  chatStore.fetchChatRooms()
+})
 </script>
 
 <template>
   <div class="chat-rooms">
     <!-- Chat Room List -->
-    <div class="chat-room-list" :class="{ 'hidden': activeRoom }">
+    <div class="chat-room-list" :class="{ hidden: chatStore.activeRoom }">
       <div
         v-for="room in chatRooms"
-        :key="room.id"
+        :key="room.chatRoomId"
         class="chat-room-item"
-        @click="toggleRoom(room.id)"
+        @click="toggleRoom(room.chatRoomId)"
       >
-        <img :src="room.profileImage" class="profile-image" />
+        <img
+          :src="room.otherUserProfileImg || '/src/assets/default-profile-img.png'"
+          class="profile-image"
+        />
         <div class="room-info">
-          <div class="room-name">{{ room.name }}</div>
-          <div class="last-message">{{ room.lastMessage }}</div>
+          <div class="room-name">{{ room.otherUserNickname }}</div>
+          <div class="last-message">{{ room.lastMessageContent }}</div>
         </div>
-        <div class="timestamp">{{ room.timestamp }}</div>
+        <div class="timestamp">{{ room.lastMessageDate }}</div>
       </div>
     </div>
 
     <!-- Chat Container -->
     <transition name="fade">
-      <div v-if="activeRoom" class="chat-container-wrapper">
+      <!-- 채팅방이 선택된 경우에만 표시 -->
+      <div v-if="chatStore.activeRoom" class="chat-container-wrapper">
         <div class="chat-header">
           <button class="back-button" @click="closeRoom">←</button>
-          <h3>{{ getActiveRoom.name }}</h3>
+          <h3>{{ getActiveRoom?.otherUserNickname }}</h3>
         </div>
         <ChatContainer
-          :messages="getActiveRoom.messages"
+          :messages="currentMessages"
           :current-user-id="currentUserId"
+          :other-user-profile="getActiveRoom?.otherUserProfileImg"
           @send-message="handleSendMessage"
         />
       </div>
@@ -93,7 +130,9 @@ const handleSendMessage = (message) => {
   background: white;
   height: 100%;
   border-radius: 28px; /* Added */
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Added */
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Added */
   overflow: hidden; /* Added to prevent content from overflowing rounded corners */
 }
 

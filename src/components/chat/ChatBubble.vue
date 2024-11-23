@@ -1,3 +1,5 @@
+<!-- src/components/chat/ChatBubble.vue -->
+
 <script setup>
 import { computed } from 'vue'
 
@@ -8,8 +10,10 @@ const props = defineProps({
   },
   profileImage: {
     type: String,
-    required: true,
-    validator: (value) => value && value.trim().length > 0,
+    validator: (value) => {
+      if (!value) return true // 빈 값 허용
+      return value.trim().length > 0 // 값이 있는 경우만 검증
+    },
   },
   timestamp: {
     type: String,
@@ -18,6 +22,11 @@ const props = defineProps({
   isMyMessage: Boolean,
   userId: {
     type: [String, Number],
+    required: true,
+  },
+  nickname: {
+    // 추가: 사용자 닉네임 prop
+    type: String,
     required: true,
   },
   showProfile: {
@@ -41,9 +50,15 @@ const bubbleClass = computed(() => ({
 
 <template>
   <div class="chat-bubble-container" :class="containerClass">
-    <div v-if="!isMyMessage" class="profile-image-wrapper">
+    <div v-if="!props.isMyMessage" class="profile-image-wrapper">
       <div v-show="showProfile" class="profile-image">
-        <img :src="profileImage" :alt="`${userId}'s profile`" loading="lazy" decoding="async" />
+        <img
+          :src="profileImage || '/src/assets/default-profile-img.png'"
+          :alt="`${nickname}'s profile`"
+          loading="lazy"
+          decoding="async"
+          aria-hidden="true"
+        />
       </div>
     </div>
     <div class="message-content" :class="contentClass">

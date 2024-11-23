@@ -26,13 +26,6 @@ onMounted(() => {
     once: false, // 스크롤 시마다 애니메이션을 반복할지 여부
     offset: 120, // 요소가 화면에 나타나기 시작할 위치 (픽셀)
   })
-
-  /// 로드 시 강제로 첫 번째 섹션으로 이동
-  if (route.path === '/') {
-    setTimeout(() => {
-      fullPageRef.value.moveTo('firstPage') // FullPage.js의 첫 섹션으로 이동
-    }, 100)
-  }
 })
 
 // 라우터 경로 변경 시 FullPage.js 제어

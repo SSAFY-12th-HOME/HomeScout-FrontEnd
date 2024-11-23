@@ -1,16 +1,26 @@
 <script setup>
+import { onMounted, onBeforeUnmount } from 'vue'
 import { RouterView } from 'vue-router'
-import AppHeader from '@/components/common/AppHeader.vue';
-import ChatView from '@/views/ChatView.vue';
+import AppHeader from '@/components/common/AppHeader.vue'
+import ChatView from '@/views/ChatView.vue'
+import { connect, disconnect } from '@/services/websocket' // WebSocket 서비스 임포트
+
+onMounted(() => {
+  connect() // 애플리케이션이 마운트될 때 WebSocket 연결
+})
+
+onBeforeUnmount(() => {
+  disconnect() // 애플리케이션이 언마운트되기 전에 WebSocket 연결 해제
+})
 </script>
 
 <template>
   <div class="app-container">
-    <AppHeader/>
+    <AppHeader />
     <div class="content-container">
       <RouterView />
     </div>
-    <ChatView/>
+    <ChatView />
   </div>
 </template>
 
