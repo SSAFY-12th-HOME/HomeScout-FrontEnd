@@ -15,7 +15,6 @@ const fetchFavorites = async () => {
   getMySaleList(
     ({ data }) => {
       favorites.value = data
-      console.log(favorites.value)
     },
     () => {
       errorStore.showError('관심 매물 로딩 실패')
@@ -98,7 +97,7 @@ const getPrice = (type, price, deposit, rentalFee) => {
   </Transition>
   <div class="favorites">
     <div v-if="favorites.length === 0" class="empty-state">
-      관심 매물이 없습니다.
+      내가 등록한 매물이 없습니다.
     </div>
     <div v-else class="properties-grid">
       <!-- Property List -->
@@ -142,7 +141,7 @@ const getPrice = (type, price, deposit, rentalFee) => {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 3rem;
-  padding: 1rem;
+  padding: 0rem;
 }
 
 .property-card {

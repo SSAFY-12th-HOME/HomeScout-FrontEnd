@@ -1,10 +1,10 @@
 <template>
   <div class="container">
     <div class="counter-wrapper">
-      <problem-counter-box number="10" />
+      <problem-counter-box :number="totalQuestions" />
     </div>
     <div class="answer-wrapper">
-      <AnswerNum number="5" />
+      <AnswerNum :number="correctAnswers" />
     </div>
     <div class="correct-wrapper">
       맞혔습니다!
@@ -15,13 +15,24 @@
 <script setup>
 import ProblemCounterBox from '@/components/quiz/QuizResult/ProblemCounterBox.vue'
 import AnswerNum from '@/components/quiz/QuizResult/AnswerNum.vue'
+
+defineProps({
+  totalQuestions: {
+    type: Number,
+    required: true
+  },
+  correctAnswers: {
+    type: Number,
+    required: true
+  }
+})
 </script>
 
 <style scoped>
 .container {
   position: relative;
-  width: 516px;
-  height: 444px;
+  width: 450px;
+  height: 400px;
   background-image: url('@/assets/QuizResult.png');
   background-size: auto;
   background-position: center;

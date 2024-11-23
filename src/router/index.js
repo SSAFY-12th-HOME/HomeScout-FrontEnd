@@ -9,6 +9,7 @@ import AnalysisView from '@/views/AnalysisView.vue'
 import QuizSolveView from '@/views/QuizSolveView.vue'
 import MypageView from '@/views/MypageView.vue'
 import QuizView from '@/views/QuizView.vue'
+import QuizCreateView from '@/views/QuizCreateView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -62,6 +63,18 @@ const router = createRouter({
       path: '/quiz',
       name: 'quiz',
       component: QuizView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/quiz/create',
+      name: 'quiz-create',
+      component: QuizCreateView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/quiz/:quizId',
+      name: 'quiz-solve',
+      component: QuizSolveView,
       meta: { requiresAuth: true }
     }
   ],

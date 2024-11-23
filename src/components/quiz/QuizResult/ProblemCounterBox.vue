@@ -23,7 +23,7 @@ defineProps({
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 16px; /* Adjust font size as needed */
+  font-size: 20px; /* Adjust font size as needed */
   text-align: center;
 }
 

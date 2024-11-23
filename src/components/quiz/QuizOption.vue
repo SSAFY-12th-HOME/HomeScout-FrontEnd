@@ -26,7 +26,7 @@ defineEmits(['click'])
 <style scoped>
 .custom-button {
   width: 361px;
-  height: 100px;
+  height: 60px;
   border-radius: 16px;
   border: 1px solid #020202;
   display: flex;

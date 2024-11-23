@@ -156,7 +156,7 @@ const getPrice = (type, price, deposit, rentalFee) => {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 3rem;
-  padding: 1rem;
+  padding: 0rem;
 }
 
 .property-card {

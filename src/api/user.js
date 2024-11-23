@@ -32,4 +32,12 @@ async function signUp(body, success, fail) {
 	await local.post(`/user`, body).then(success).catch(fail);
 }
 
-export { login, sendVerifyCode, checkVerifyCode, checkDuplicationEmail, checkDuplicationNickname, signUp }
+// 비밀번호 찾기
+async function findPassword(body, success, fail) {
+	await local.put(`/user/password`, body).then(success).catch(fail);
+}
+
+export { 
+	login, sendVerifyCode, checkVerifyCode, checkDuplicationEmail, checkDuplicationNickname, signUp,
+	findPassword
+ }

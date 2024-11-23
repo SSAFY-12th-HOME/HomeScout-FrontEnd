@@ -27,7 +27,7 @@ const fetchUserProfile = async () => {
     tabs.value = [
       { id: 'favorite', name: '관심 매물' },
       { id: 'my-properties', name: '나의 매물' },
-      { id: 'quiz', name: '퀴즈 내역' },
+      { id: 'quiz', name: '내가 만든 퀴즈' },
       { id: 'edit', name: '정보 수정' },
     ]
   } else {
@@ -111,7 +111,11 @@ const handleFileChange = async (event) => {
 
 <template>
 	<ErrorModal />
+        
   <div class="mypage">
+    <div class="loading" v-if="isUploading">
+      <PulseLoader/>
+    </div>
     <!-- 프로필 헤더 -->
     <div class="profile-header">
       <!-- 숨겨진 파일 input -->
@@ -139,10 +143,6 @@ const handleFileChange = async (event) => {
         />
         <div class="image-overlay">
           <span class="upload-text">이미지 변경</span>
-        </div>
-        
-        <div v-if="isUploading">
-          <PulseLoader />
         </div>
       </div>
 

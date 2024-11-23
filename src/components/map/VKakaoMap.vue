@@ -1,7 +1,8 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { KakaoMap, KakaoMapMarker } from 'vue3-kakao-maps'
-import { getPodcastData } from '@/api/map' // API 요청 함수
+import { getPodcastData, getSafetyScore } from '@/api/map' // API 요청 함수
+import sgg from '@/assets/sgg.json';
 
 const podcastUrl = ref()
 const isModalVisible = ref(false) // 모달창을 표시할 변수
@@ -20,11 +21,26 @@ const clusterer = ref()
 const markerIcon = '/src/assets/house-marker-icon.png'
 const markerSelectIcon = '/src/assets/house-marker-select-icon.png'
 
+const selectedSido = ref('')
+const categories = ref([
+  { text: '사고', value: 'carAccident'},
+  { text: '화재', value: 'fire'},
+  { text: '범죄', value: 'crime'},
+  { text: '생활', value: 'lifeSafety'},
+  { text: '자살', value: 'suicide'},
+  { text: '전염병', value: 'disease'},
+])
+const activeCategory = ref('')
+const polygonData = ref([])
+
 const props = defineProps({
   aptList: {
     type: Array,
     default: () => [],
   },
+  selectedSidoProps: {
+    type: String
+  }
 })
 
 const emit = defineEmits(['markerClickEvent'])
@@ -49,6 +65,55 @@ watch(
     })
     panTo(markerList.value[0].lat, markerList.value[0].lng)
   },
+)
+
+watch(
+  () => props.selectedSidoProps,
+  (newSido) => {
+    selectedSido.value = newSido
+    activeCategory.value = ''
+    removeArea()
+
+    // 시군구 경계 데이터 초기화
+    polygonData.value = sgg.features
+      .filter(feature => {
+        return feature.properties.SIG_CD.substr(0, 2) === selectedSido.value
+      })
+      .map(feature => ({
+        coordinates: feature.geometry.coordinates[0],
+        SIG_CD: feature.properties.SIG_CD
+      }))
+
+    // 위도, 경도 -> 카카오 객체로 변경
+    polygonData.value.forEach(polygon => {
+      polygon.paths = []
+      polygon.coordinates.forEach(coordinate => {
+        polygon.paths.push(new window.kakao.maps.LatLng(coordinate[1], coordinate[0]))
+      })
+    })
+      
+    // 시도 클릭하면 안전등급 데이터 불러오기 & 폴리곤 데이터에 등급 넣기
+    getSafetyScore(
+      { sidoCd: selectedSido.value },
+      ({ data }) => {
+        polygonData.value.forEach(polygon => {
+          data.forEach(grade => {
+            if(polygon.SIG_CD == grade.sggCd) {
+              polygon.carAccident = grade.carAccident
+              polygon.fire = grade.fire
+              polygon.crime = grade.crime
+              polygon.lifeSafety = grade.lifeSafety
+              polygon.suicide = grade.suicide
+              polygon.disease = grade.disease
+            }
+          })
+        })
+      },
+      () => {
+        console.error('안전등급 불러오기 실패')
+      }
+    )
+  }
 )
 
 const onLoadKakaoMap = (mapRef) => {
@@ -159,6 +224,48 @@ const onLoadedMetadata = () => {
     duration.value = formatTime(audioElement.value.duration) // duration 값 설정
   }
 }
+
+const onCategoryClick = (value) => {
+  // 기존 폴리곤 삭제
+  removeArea()
+  // 시도 선택 안하면 클릭 X
+  if(selectedSido.value === '') return
+  // 같은 카테고리 클릭시 취소
+  if(activeCategory.value === value) {
+    activeCategory.value = ''
+    return
+  }
+  activeCategory.value = value
+
+  polygonData.value.forEach(polygon => {
+    displayArea(polygon.paths, polygon[activeCategory.value]/5 - 0.1)
+  })
+}
+
+
+const polygons = ref([])
+
+const displayArea = (paths, fill) => {
+  const polygon = new window.kakao.maps.Polygon({
+    path: paths, // 그려질 다각형의 좌표 배열입니다
+    strokeWeight: 3, // 선의 두께입니다
+    strokeColor: '#f64545', // 선의 색깔입니다
+    strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+    fillColor: '#e25555', // 채우기 색깔입니다
+    fillOpacity: fill // 채우기 불투명도 입니다
+  })
+
+  // 지도에 다각형을 표시합니다
+  if (map.value !== undefined) {
+    polygon.setMap(map.value)
+    polygons.value.push(polygon)
+  }
+}
+
+const removeArea = () => {
+  polygons.value.forEach(polygon => polygon.setMap(null))
+  polygons.value = []
+}
 </script>
 
 <template>
@@ -166,7 +273,7 @@ const onLoadedMetadata = () => {
     :lat="37.563652488"
     :lng="126.977532624"
     width="100%"
-    height="90vh"
+    height="89vh"
     level="6"
     @onLoadKakaoMap="onLoadKakaoMap"
     @onLoadKakaoMapMarkerCluster="onLoadKakaoMapMarkerCluster"
@@ -192,6 +299,18 @@ const onLoadedMetadata = () => {
       </template>
     </KakaoMapMarker>
   </KakaoMap>
+  
+  <div class="category-buttons">
+    <template v-for="category in categories" :key="category.value">
+      <button 
+        @click="onCategoryClick(category.value)"
+        :class="['category-button', { active: activeCategory === category.value }]"
+      >
+        {{ category.text }}
+      </button>
+    </template>
+  </div>
+
   <!-- AI 뉴스 팟캐스트 버튼 -->
   <div class="ai-news-button">
     <button @click="navigateToNews" class="ai-news-btn">AI 뉴스 팟캐스트</button>
@@ -388,5 +507,44 @@ audio::-webkit-media-controls {
 
 .right {
   right: 0;
+}
+
+.category-buttons {
+  position: absolute;
+  bottom: 30%;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 35px; /* 버튼들의 동일한 너비 설정 */
+  z-index:10
+}
+
+.category-button {
+  padding: 8px 0px;
+  background-color: white;
+  color: black;
+  border: 1px solid #ababab;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 10px;
+  text-align: center;
+  transition: all 0.2s ease;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+  font-weight: bold
+}
+
+.category-button:hover {
+  background-color: #f5f5f5;
+}
+
+.category-button.active {
+  background-color: #e6e6e6;
+  border-color: #999;
+}
+
+.category-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
 }
 </style>

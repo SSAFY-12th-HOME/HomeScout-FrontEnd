@@ -16,6 +16,7 @@ const aptList = ref([]);
 const aptId = ref('');
 const sidoList = ref([])
 const gugunList = ref([{ text: "구군선택", value: "" }])
+const selectedSido = ref('')
 
 onMounted(() => {
   // init();
@@ -39,6 +40,7 @@ const getSidoList = () => {
 }
 
 const onChangeSido = (val) => {
+  selectedSido.value = val.substr(0, 2)
   listGugun(
     { sido: val },
     ({ data }) => {
@@ -60,7 +62,6 @@ const onChangeGugun = (val) => {
     { sgg: val },
     ({ data }) => {
       aptList.value = data;
-      console.log(data);
     },
     (err) => {
       console.log(err);
@@ -99,7 +100,7 @@ const onSearchApt = (searchQuery) => {
         <VSelect style="float: left; height: 36px; margin: 0 10px" :selectOption="sidoList" @onKeySelect="onChangeSido" />
         <VSelect style="float: right; height: 36px; margin: 0 10px" :selectOption="gugunList" @onKeySelect="onChangeGugun" />
       </div>
-      <VKakaoMap :apt-list="aptList" @marker-click-event="onMarkerClickEvent" />
+      <VKakaoMap :apt-list="aptList" :selected-sido-props="selectedSido" @marker-click-event="onMarkerClickEvent" />
     </div>
   </div>
 </template>
@@ -108,7 +109,7 @@ const onSearchApt = (searchQuery) => {
 .main-container {
   display: flex;
   width: 100%;
-  height: 90vh;
+  height: 89vh;
   position: relative;
 }
 

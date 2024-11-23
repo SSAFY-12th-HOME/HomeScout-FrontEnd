@@ -22,8 +22,8 @@ const props = defineProps({
   height: 93px;
   font-family: 'Roboto', sans-serif;
   font-weight: 600; /* SemiBold */
-  font-size: 80px;
-  line-height: 93px;
+  font-size: 60px;
+  line-height: 145px;
   letter-spacing: 0.1px;
   text-align: center;
 }

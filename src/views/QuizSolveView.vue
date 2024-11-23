@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 
 import 'swiper/css'
@@ -8,22 +8,56 @@ import 'swiper/css/pagination'
 import { Navigation, Pagination } from 'swiper/modules'
 import QuizPage from '@/components/quiz/QuizPage.vue'
 import QuizResult from '@/components/quiz/QuizResult/QuizResult.vue'
+import { getQuiz, solveQuiz } from '@/api/quiz'
+
+import { useRoute, useRouter } from 'vue-router'
 
 // Reference to the Swiper instance
+const route = useRoute()
+const router = useRouter()
 const mySwiper = ref(null)
+const quizData = ref({})
+const solveData = ref([])
+const totalCount = ref(0)
+const correctCount = ref(0)
+const exp = ref(0)
+
+onMounted(() => {
+  getQuiz(
+    route.params.quizId,
+    ({ data }) => {
+      quizData.value = data
+    },
+    () => {
+      console.log('퀴즈 불러오기 실패')
+    }
+  )
+})
 
 // Function to navigate to the next slide
-const slideNext = () => {
-  if (mySwiper.value && mySwiper.value.slideNext) {
+const slideNext = (quizQuestionId, option) => {
+  if (mySwiper.value && mySwiper.value.slideNext && option.length != 0) {
+    solveData.value.push({quizQuestionId, option})
+    console.log(mySwiper.value.activeIndex)
+    console.log(quizData.value.questions.length)
+    if(mySwiper.value.activeIndex === quizData.value.questions.length - 1) {
+      solveQuiz(
+        route.params.quizId, { solve: solveData.value },
+        ({ data }) => {
+          totalCount.value = data.totalCount
+          correctCount.value = data.correctCount
+          exp.value = data.exp
+        },
+        () => {
+          console.log('solve오류')
+        }
+      )
+      console.log(mySwiper.value)
+    }
     mySwiper.value.slideNext()
   }
-}
-
-// Function to navigate to the previous slide
-const slidePrev = () => {
-  if (mySwiper.value && mySwiper.value.slidePrev) {
-    mySwiper.value.slidePrev()
-  }
+  // console.log(mySwiper.value.activeIndex)
+  // console.log(solveData.value)
 }
 
 // Event handler when Swiper instance is initialized
@@ -36,61 +70,13 @@ const onSlideChange = () => {
   console.log('Slide changed')
 }
 
+const handleRestart = () => {
+  solveData.value = []
+  mySwiper.value.slideNext()
+}
 
-const quizData = {
-  'quizId': 1,
-  'title': 'JavaScript Fundamentals',
-  'desc': 'Test your knowledge of JavaScript basics',
-  'questions': [
-    {
-      'questionId': 101,
-      'quizId': 1,
-      'content': 'What is the correct way to declare a variable in JavaScript?',
-      'answer': 2,
-      'options': [
-        {
-          'optionId': 1001,
-          'content': 'variable x = 5'
-        },
-        {
-          'optionId': 1002,
-          'content': 'let x = 5'
-        },
-        {
-          'optionId': 1003,
-          'content': 'x := 5'
-        },
-        {
-          'optionId': 1004,
-          'content': 'x => 5'
-        }
-      ]
-    },
-    {
-      'questionId': 102,
-      'quizId': 1,
-      'content': 'Which method is used to add elements to the end of an array?',
-      'answer': 1,
-      'options': [
-        {
-          'optionId': 1005,
-          'content': 'push()'
-        },
-        {
-          'optionId': 1006,
-          'content': 'append()'
-        },
-        {
-          'optionId': 1007,
-          'content': 'add()'
-        },
-        {
-          'optionId': 1008,
-          'content': 'insert()'
-        }
-      ]
-    }
-  ]
+const handleQuizList = () => {
+  router.push('/quiz')
 }
 
 </script>
@@ -102,6 +88,8 @@ const quizData = {
       :modules="[Navigation, Pagination]"
       :spaceBetween="0"
       :slidesPerView="1"
+      :rewind="true"
+      :allow-touch-move="false"
       @swiper="onSwiper"
       @slideChange="onSlideChange"
       direction="horizontal"
@@ -114,13 +102,20 @@ const quizData = {
         <QuizPage
           :quiz-index="index + 1"
           :quiz-title="quizData.title"
-          :question="question.content"
+          :question="question.question"
           :quiz-option="question.options"
+          :quiz-question-id="question.quizQuestionId"
           @next="slideNext"
         />
       </SwiperSlide>
       <SwiperSlide>
-        <QuizResult correct-answers="" total-questions=""></QuizResult>
+        <QuizResult 
+          :total-questions="totalCount" 
+          :correct-answers="correctCount"
+          :exp="exp"
+          @restart="handleRestart"
+          @quizList="handleQuizList"
+        />
       </SwiperSlide>
     </Swiper>
   </div>
@@ -129,9 +124,12 @@ const quizData = {
 <style scoped>
 .swiper-container {
   width: 100%;
-  height: 100vh;
+  height: 100%;
   position: relative;
-	top: 140px;
+}
+
+.swiper-slide {
+  height: 90vh
 }
 
 </style>

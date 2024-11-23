@@ -50,8 +50,21 @@ async function getUserInfo(success, fail) {
 	await local.get(`/user`).then(success).catch(fail)
 }
 
+// 내가 만든 퀴즈 조회
+async function getMyQuizList(success, fail) {
+	local.defaults.headers["Authorization"] = getTokenHeader()
+	await local.get(`/quiz/my`).then(success).catch(fail)
+}
+
+// 내가 만든 퀴즈 삭제
+async function deleteMyQuiz(quizId, success, fail) {
+	local.defaults.headers["Authorization"] = getTokenHeader()
+	await local.delete(`/quiz/${quizId}`).then(success).catch(fail)
+}
+
 
 export { 
 	getMypage, getMyWishList, uploadImage, getMySaleList,
-	deleteMySale, confirmPassword, getUserInfo
+	deleteMySale, confirmPassword, getUserInfo, getMyQuizList,
+	deleteMyQuiz
 };

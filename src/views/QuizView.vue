@@ -4,6 +4,9 @@ import { useUserStore } from '@/stores/user';
 import { getQuizList } from '@/api/quiz';
 import ErrorModal from '@/components/common/ErrorModal.vue';
 import { useErrorStore } from '@/stores/error';
+import { useRouter} from 'vue-router'
+
+const router = useRouter()
 
 const userStore = useUserStore()
 const errorStore = useErrorStore()
@@ -30,19 +33,23 @@ const fetchQuizzes = () => {
 }
 
 const startQuiz = (quizId) => {
-  const quiz = quizzes.value.find(q => q.id === quizId)
-  if (quiz) {
-    quiz.isCompleted = true
-  }
+  router.push('/quiz/' + quizId)
 }
 
 const sortQuizzes = (option) => {
   sortOption.value = option
+  fetchQuizzes()
 }
 
 const createQuiz = () => {
-  // 퀴즈 생성 로직 구현
-  console.log('퀴즈 생성 페이지로 이동')
+  router.push('/quiz/create')
+}
+
+const getDesc = (desc) => {
+  if(desc.length > 54) {
+    return desc.substr(0, 54) + '...'
+  }
+  return desc
 }
 </script>
 
@@ -60,7 +67,7 @@ const createQuiz = () => {
           @click="createQuiz"
           class="create-quiz-button"
         >
-          퀴즈 생성
+          퀴즈 만들기
         </button>
       </div>
     </div>
@@ -82,11 +89,9 @@ const createQuiz = () => {
       </div>
 
       <div class="quiz-grid">
-        <div v-for="quiz in quizzes" 
-             :key="quiz.id" 
-             class="quiz-card">
+        <div v-for="quiz in quizzes" :key="quiz.quizId" class="quiz-card" :class="[{ 'quiz-card-solved': quiz.isSolve }]">
           <h2 class="quiz-title">{{ quiz.title }}</h2>
-          <p class="quiz-description">{{ quiz.desc }}</p>
+          <p class="quiz-description">{{ getDesc(quiz.desc) }}</p>
           
           <div class="quiz-tags">
             <span class="tag">{{ quiz.tag1 }}</span>
@@ -103,7 +108,7 @@ const createQuiz = () => {
               <span class="author-name">{{ quiz.writer.nickname }}</span>
             </div>
             <button 
-              @click="startQuiz(quiz.id)"
+              @click="startQuiz(quiz.quizId)"
               :class="['quiz-button', { 'completed': quiz.isSolve }]"
               :disabled="quiz.isSolve"
             >
@@ -376,6 +381,7 @@ const createQuiz = () => {
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
+  margin-bottom: 50px;
 }
 
 @media (min-width: 768px) {
@@ -387,12 +393,12 @@ const createQuiz = () => {
 .quiz-card {
   height: 200px;
   border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 20px;
   background-color: white;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(44, 132, 7, 0.316);
 }
 
 .quiz-title {
@@ -404,9 +410,10 @@ const createQuiz = () => {
 .quiz-description {
   font-size: 14px;
   color: #666;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   line-height: 1.5;
   flex-grow: 1;
+  min-height: 42px
 }
 
 .quiz-tags {
@@ -444,6 +451,10 @@ const createQuiz = () => {
 .author-name {
   font-size: 14px;
   color: #495057;
+}
+
+.quiz-card-solved {
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 :global(body) {
