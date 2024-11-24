@@ -565,7 +565,6 @@ const formatBrokerLicense = (event) => {
   align-items: center;
   min-height: 80vh;
   padding: 20px;
-  font-family: Arial, sans-serif;
   overflow-y: auto;
 }
 

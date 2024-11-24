@@ -63,7 +63,6 @@ defineProps({
   left: 50%;
   transform: translateX(-50%); /* This centers the counter horizontally */
 
-  font-family: 'Roboto', sans-serif;
   font-weight: 200; /* SemiBold */
   line-height: 24px;
   letter-spacing: 0.1px;

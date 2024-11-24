@@ -150,6 +150,7 @@ const getDesc = (desc) => {
 
 .subtitle {
   color: #666;
+  margin-bottom: 0px;
 }
 
 .create-quiz-button {

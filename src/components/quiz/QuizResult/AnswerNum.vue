@@ -20,7 +20,6 @@ const props = defineProps({
 .counter-display {
   width: 120px;
   height: 93px;
-  font-family: 'Roboto', sans-serif;
   font-weight: 600; /* SemiBold */
   font-size: 60px;
   line-height: 145px;

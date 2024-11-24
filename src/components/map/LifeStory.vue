@@ -308,7 +308,6 @@ watch(
   font-size: 0.9375rem;
   line-height: 1.6;
   color: #374151;
-  font-family: inherit;
   transition: border-color 0.2s ease;
 }
 

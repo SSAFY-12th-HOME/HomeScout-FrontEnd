@@ -15,6 +15,8 @@ import piniaPersist from 'pinia-plugin-persistedstate'
 import { PerfectScrollbarPlugin } from 'vue3-perfect-scrollbar'
 import 'vue3-perfect-scrollbar/style.css'
 
+import './assets/css/font.css'
+
 useKakao(import.meta.env.VITE_KAKAO_MAP_SERVICE_KEY, ['clusterer', 'services', 'drawing'])
 
 const app = createApp(App)

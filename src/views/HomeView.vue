@@ -145,7 +145,6 @@ function triggerAOS() {
 /* Add some basic styling */
 .section {
   text-align: center;
-  font-family: Arial, sans-serif;
   background-color: #66b56b;
 }
 

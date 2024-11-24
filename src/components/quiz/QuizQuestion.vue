@@ -20,5 +20,6 @@ defineProps({
   padding: 0 20px;
   font-size: 18px;
   line-height: 1.5;
+  font-weight: 500;
 }
 </style>

@@ -160,6 +160,7 @@ export default {
 .subtitle {
   font-size: 16px;
   color: #6c757d;
+  margin-bottom: 0px;
 }
 
 /* 공지사항 테이블 스타일 */

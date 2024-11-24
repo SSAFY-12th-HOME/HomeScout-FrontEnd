@@ -25,7 +25,8 @@ defineEmits(['next'])
   background-color: white;
   font-size: 16px;
   cursor: pointer;
-  box-shadow: 0 5px 5px -5px
+  box-shadow: 0 5px 5px -5px;
+  font-weight: 600;
 }
 
 .next-button:hover {

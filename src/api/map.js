@@ -72,6 +72,12 @@ async function getSafetyScore(param, success, fail) {
   await local.get(`/map/safety`, { params: param }).then(success).catch(fail)
 }
 
+// 시도 중심 좌표 및 스케일 불러오기
+async function getSidoCenter(param, success, fail) {
+  local.defaults.headers['Authorization'] = getTokenHeader()
+  await local.get(`/apt/region/center`, { params: param }).then(success).catch(fail)
+}
+
 // 현재 지도 중앙 좌표로 팟캐스트 데이터를 요청하는 함수
 async function getPodcastData(latitude, longitude) {
   try {
@@ -108,5 +114,6 @@ export {
   registerLifeStory,
   deleteLifeStory,
   getPodcastData,
-  getSafetyScore
+  getSafetyScore,
+  getSidoCenter
 }

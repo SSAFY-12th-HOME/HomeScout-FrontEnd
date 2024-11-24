@@ -231,7 +231,6 @@ const isValid = computed(() => {
   justify-content: center;
   height: 80vh;
   background-color: white;
-  font-family: Arial, sans-serif;
 }
 
 /* Logo styling */

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch,onBeforeUnmount } from 'vue'
 import { KakaoMap, KakaoMapMarker } from 'vue3-kakao-maps'
-import { getPodcastData, getSafetyScore } from '@/api/map' // API 요청 함수
+import { getPodcastData, getSafetyScore, getSidoCenter } from '@/api/map' // API 요청 함수
 import sgg from '@/assets/sgg.json';
 
 const podcastUrl = ref()
@@ -48,6 +48,11 @@ const categories = ref([
 const activeCategory = ref('')
 const polygonData = ref([])
 
+const mapLat = ref('37.528045815')
+const mapLng = ref('126.982306163')
+const mapScale = ref('8')
+
+
 const props = defineProps({
   aptList: {
     type: Array,
@@ -88,6 +93,23 @@ watch(
     selectedSido.value = newSido
     activeCategory.value = ''
     removeArea()
+
+    // DB에서 slectedSido.value로 중심좌표 및 지도확대 level 가져오기
+    getSidoCenter(
+      { sido: selectedSido.value + '00000000'},
+      ({ data }) => {
+        mapLat.value = data.lat
+        mapLng.value = data.lng
+        mapScale.value = data.scale
+      },
+      () => {
+        console.log('중심좌표 불러오기 실패')
+      }
+    )
+
+    // 중심좌표 및 scale 변경하기
+    panTo(mapLat.value, mapLng.value)
+    setLevel(mapScale.value)
 
     // 시군구 경계 데이터 초기화
     polygonData.value = sgg.features
@@ -153,6 +175,12 @@ const onClickKakaoMapMarker = (marker) => {
 const panTo = (lat, lng) => {
   if (map.value) {
     map.value.panTo(new window.kakao.maps.LatLng(lat, lng))
+  }
+}
+
+const setLevel = (level) => {
+  if (map.value) {
+    map.value.setLevel(level)
   }
 }
 
@@ -315,11 +343,11 @@ const removeArea = () => {
 
 <template>
   <KakaoMap
-    :lat="37.563652488"
-    :lng="126.977532624"
+    :lat="mapLat"
+    :lng="mapLng"
     width="100%"
     height="89vh"
-    level="6"
+    :level="mapScale"
     @onLoadKakaoMap="onLoadKakaoMap"
     @onLoadKakaoMapMarkerCluster="onLoadKakaoMapMarkerCluster"
   >
@@ -864,11 +892,11 @@ input[type='range']::-webkit-slider-thumb {
   border: 1px solid #ababab;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 10px;
+  font-size: 12px;
   text-align: center;
   transition: all 0.2s ease;
   box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-  font-weight: bold
+  font-weight: 600
 }
 
 .category-button:hover {
