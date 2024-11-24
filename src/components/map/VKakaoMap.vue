@@ -91,7 +91,7 @@ watch(
         polygon.paths.push(new window.kakao.maps.LatLng(coordinate[1], coordinate[0]))
       })
     })
-      
+
     // 시도 클릭하면 안전등급 데이터 불러오기 & 폴리곤 데이터에 등급 넣기
     getSafetyScore(
       { sidoCd: selectedSido.value },
@@ -118,10 +118,6 @@ watch(
 
 const onLoadKakaoMap = (mapRef) => {
   map.value = mapRef
-  // console.log(map.value);
-  // window.kakao.maps.event.addListener(marker.value, 'click', function() {
-  // 	console.log('makrer 클릭!');
-  // });
 }
 
 const onLoadKakaoMapMarkerCluster = (clustererRef) => {
@@ -130,9 +126,9 @@ const onLoadKakaoMapMarkerCluster = (clustererRef) => {
 
 const onClickKakaoMapMarker = (marker) => {
   emit('markerClickEvent', marker.aptId)
-  markerList.value.forEach((marker) => {
-    marker.icon = markerIcon
-    marker.zindex = 0
+  markerList.value.forEach((m) => {
+    m.icon = markerIcon
+    m.zindex = 0
   })
   marker.icon = markerSelectIcon
   marker.zindex = 1
@@ -141,13 +137,11 @@ const onClickKakaoMapMarker = (marker) => {
 
 const panTo = (lat, lng) => {
   if (map.value) {
-    // 지도 중심을 부드럽게 이동시킵니다
-    // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
     map.value.panTo(new window.kakao.maps.LatLng(lat, lng))
   }
 }
 
-//지도 중심좌표 가져오기
+// 지도 중심좌표 가져오기
 const getCenterCoordinates = () => {
   if (map.value) {
     const center = map.value.getCenter() // 지도 중심 좌표
@@ -278,7 +272,6 @@ const removeArea = () => {
     @onLoadKakaoMap="onLoadKakaoMap"
     @onLoadKakaoMapMarkerCluster="onLoadKakaoMapMarkerCluster"
   >
-    <!-- :markerCluster="{ markers: markerList }" -->
     <KakaoMapMarker
       v-for="marker in markerList"
       :key="marker.aptId"
@@ -295,14 +288,14 @@ const removeArea = () => {
       @onClickKakaoMapMarker="onClickKakaoMapMarker(marker)"
     >
       <template v-if="marker.zindex === 1" v-slot:infoWindow>
-        <div style="padding: 5px; text-align: center">{{ marker.aptNm }}</div>
+        <div class="info-window">{{ marker.aptNm }}</div>
       </template>
     </KakaoMapMarker>
   </KakaoMap>
-  
+
   <div class="category-buttons">
     <template v-for="category in categories" :key="category.value">
-      <button 
+      <button
         @click="onCategoryClick(category.value)"
         :class="['category-button', { active: activeCategory === category.value }]"
       >
@@ -311,89 +304,137 @@ const removeArea = () => {
     </template>
   </div>
 
+
   <!-- AI 뉴스 팟캐스트 버튼 -->
   <div class="ai-news-button">
-    <button @click="navigateToNews" class="ai-news-btn">AI 뉴스 팟캐스트</button>
+    <button @click="navigateToNews" class="ai-news-btn">
+      <span class="button-icon">🎙️</span> AI 뉴스 팟캐스트
+    </button>
   </div>
 
   <!-- 팟캐스트 모달 창 -->
-  <div v-if="isModalVisible" class="modal">
-    <div class="modal-content">
-      <button class="close" @click="closeModal">X</button>
-      <h2>
-        {{ currentDistrictName ? currentDistrictName + ' AI 뉴스 팟캐스트' : 'AI 뉴스 팟캐스트' }}
-      </h2>
+  <transition name="fade">
+    <div v-if="isModalVisible" class="modal">
+      <div class="modal-content">
+        <button class="close" @click="closeModal">&times;</button>
 
-      <!-- 팟캐스트 비디오 -->
-      <div class="podcast-video" v-if="podcastVideoUrl">
-        <video :src="podcastVideoUrl" autoplay loop />
+        <!-- 제목 섹션 -->
+        <div class="title-section">
+          <div class="title-content">
+            <div class="title-header">
+              <div class="icon-wrapper">
+                <span class="podcast-icon">🎙️</span>
+              </div>
+              <div class="status-badge">
+                <span class="status-dot"></span>
+                LIVE NOW
+              </div>
+            </div>
+            <h2>
+              <template v-if="currentDistrictName">
+                <span class="district-name">{{ currentDistrictName }}</span>
+                <span class="title-text">AI 뉴스 팟캐스트</span>
+              </template>
+              <template v-else>
+                <span class="title-text">AI 뉴스 팟캐스트</span>
+              </template>
+            </h2>
+            <div class="subtitle">
+              <span class="episode">EP.01</span>
+              <span class="dot">•</span>
+              <span class="date">Today's News</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 팟캐스트 비디오 -->
+        <div class="podcast-video" v-if="podcastVideoUrl">
+          <video :src="podcastVideoUrl" autoplay loop muted></video>
+        </div>
+
+        <!-- 오디오 플레이어 -->
+        <div class="audio-player">
+          <audio
+            ref="audioElement"
+            :src="podcastUrl"
+            @timeupdate="onTimeUpdate"
+            @ended="closeModal"
+            @loadedmetadata="onLoadedMetadata"
+            autoplay
+          />
+
+          <!-- 커스터마이징한 오디오 컨트롤 -->
+          <div class="controls">
+            <button @click="playPodcast" class="play-btn">
+              <span v-if="isPlaying" class="pause-icon">❚❚</span>
+              <span v-else class="play-icon">►</span>
+            </button>
+
+            <div class="progress-container">
+              <span class="time current">{{ currentTime }}</span>
+              <div class="progress-bar-wrapper">
+                <input
+                  type="range"
+                  v-model="progress"
+                  min="0"
+                  max="100"
+                  @input="seekAudio"
+                  class="progress-bar"
+                />
+                <div
+                  class="progress-bar-fill"
+                  :style="{ width: `${progress}%` }"
+                ></div>
+              </div>
+              <span class="time duration">{{ duration }}</span>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <!-- 오디오 플레이어 -->
-      <div class="audio-player">
-        <audio
-          ref="audioElement"
-          :src="podcastUrl"
-          @timeupdate="onTimeUpdate"
-          @ended="closeModal"
-          @loadedmetadata="onLoadedMetadata"
-          autoplay
-          controls
-        />
-      </div>
-
-      <!-- 커스터마이징한 오디오 컨트롤 -->
-      <!-- 오디오 진행 상태바 -->
-      <div class="progress-container">
-        <div class="time left">{{ currentTime }}</div>
-        <!-- 현재 시간 표시 -->
-        <input type="range" v-model="progress" min="0" max="100" @input="seekAudio" />
-        <div class="time right">{{ duration }}</div>
-        <!-- 전체 시간 표시 -->
-      </div>
-
-      <!-- 재생/일시정지 버튼 -->
-      <button @click="playPodcast" class="play-btn">
-        {{ isPlaying ? '일시 정지' : '재생' }}
-      </button>
     </div>
-  </div>
+  </transition>
 </template>
+
 <style scoped>
+
+
 /* 전체 모달과 버튼 영역 스타일 */
 .ai-news-button {
   position: absolute;
   bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #4caf50;
-  padding: 10px 20px;
-  border-radius: 30px;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
   z-index: 10;
 }
 
 .ai-news-btn {
-  border: none;
-  background-color: inherit;
-  font-size: inherit;
-  cursor: pointer;
-  width: 100%;
-  height: 100%;
   display: flex;
-  justify-content: center;
   align-items: center;
+  background: linear-gradient(135deg, #11cbbb 0%, #66b56b 100%);
+  padding: 12px 24px;
+  border: none;
+  border-radius: 30px;
   color: white;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.ai-news-button:hover {
-  background-color: #45a049;
+.ai-news-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
-.ai-news-button:active {
-  background-color: #6ac26e;
+.ai-news-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.button-icon {
+  margin-right: 8px;
+  font-size: 20px;
 }
 
 /* 모달 창 스타일 */
@@ -403,23 +444,91 @@ const removeArea = () => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 100;
 }
 
 .modal-content {
-  background-color: #fff;
-  padding: 25px;
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  padding: 32px;
   border-radius: 20px;
-  width: 380px;
-  text-align: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  display: flex; /* 자식 요소들을 세로로 배치 */
-  flex-direction: column; /* 세로로 배치 */
-  align-items: center; /* 수평 가운데 정렬 */
-  justify-content: center; /* 수직 가운데 정렬 */
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* 새로운 title-section 스타일 */
+.title-section {
+  margin-bottom: 28px;
+  padding: 0 0 20px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.title-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.title-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.icon-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.podcast-icon {
+  font-size: 24px;
+  background: linear-gradient(135deg, #f0f0f0, #e6e6e6);
+  padding: 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #11cbbb, #66b56b);
+  padding: 6px 12px;
+  border-radius: 20px;
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(102, 181, 107, 0.3);
+  animation: float 3s ease-in-out infinite;
+  margin-top: 25px;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #fff;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 /* X 버튼 스타일 */
@@ -427,86 +536,250 @@ const removeArea = () => {
   position: absolute;
   top: 10px;
   right: 10px;
-  font-size: 18px;
-  cursor: pointer;
+
+  font-size: 28px;
   background: none;
   border: none;
+  color: #666;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
 }
 
-h2 {
-  font-size: 22px;
-  font-weight: bold;
-  margin-bottom: 15px;
+.close:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #333;
 }
 
+.title-section {
+  margin-bottom: 28px;
+  padding: 0 0 20px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.title-section h2 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0;
+  line-height: 1.3;
+  letter-spacing: -0.5px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.district-name {
+  background: linear-gradient(135deg, #11cbbb 0%, #66b56b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  font-size: 30px;
+}
+
+.title-text {
+  background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes districtGlow {
+  0% {
+    box-shadow: 0 2px 8px rgba(102, 181, 107, 0.2);
+  }
+  100% {
+    box-shadow: 0 4px 12px rgba(102, 181, 107, 0.4);
+  }
+}
+
+.subtitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  font-size: 13px;
+}
+
+.episode {
+  font-weight: 600;
+  color: #11cbbb;
+}
+
+.dot {
+  color: #ccc;
+}
+
+.date {
+  color: #666;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-2px); }
+  100% { transform: translateY(0px); }
+}
+
+
+.podcast-badge {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #11cbbb, #66b56b);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  gap: 7px;
+  margin-left: 5px;
+}
+
+.pulse {
+  width: 8px;
+  height: 8px;
+  background-color: #fff;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+
+}
+
+/* 팟캐스트 비디오 스타일 */
 .podcast-video {
   width: 100%;
-  height: 180px;
-  margin-bottom: 10px; /* 비디오와 진행바 사이의 불필요한 공백을 줄임 */
+  height: 200px;
+  margin-bottom: 24px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .podcast-video video {
-  width: 70%;
-  height: 70%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 10px;
 }
 
+/* 오디오 플레이어 새로운 스타일 */
 .audio-player {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.controls {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  display: none;
+  gap: 16px;
+}
+
+.play-btn {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #11cbbb, #66b56b);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(102, 181, 107, 0.3);
+}
+
+.play-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(102, 181, 107, 0.4);
 }
 
 .progress-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.progress-bar {
+
+}
+.progress-bar-wrapper {
+  flex: 1;
   position: relative;
-  width: 90%;
-  margin-top: 10px; /* 비디오와 진행바 사이의 공백을 최소화 */
+  height: 6px;
+  background: #e9ecef;
+  border-radius: 3px;
+}
+
+.progress-bar-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(to right, #11cbbb, #66b56b);
+  border-radius: 3px;
+  pointer-events: none;
 }
 
 input[type='range'] {
+  flex: 1;
+  margin: 0 10px;
+  -webkit-appearance: none;
+  height: 5px;
+  border-radius: 5px;
+  outline: none;
+}
+input[type='range']::-webkit-slider-runnable-track {
   width: 100%;
+  height: 0;
+  background: #e9ecef; /* 트랙의 기본 색상 */
+  border-radius: 0px;
 }
 
-button.play-btn {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 12px 25px;
-  font-size: 16px;
-  border-radius: 25px;
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none; /* 기본 브라우저 스타일 제거 */
+  width: 16px;
+  height: 16px;
+  background: #e9ecef; /* 슬라이더의 손잡이 색상 */
+  border-radius: 50%;
   cursor: pointer;
-  width: 90%;
-  transition: background-color 0.3s ease;
+  position: relative;
+  z-index: 0; /* 트랙보다 밑에 표시 */
 }
 
-button.play-btn:hover {
-  background-color: #45a049;
-}
-
-button.play-btn:active {
-  background-color: #6ac26e;
-}
-
-audio::-webkit-media-controls {
-  display: none;
-}
-
-/* 시간 표시 스타일 */
 .time {
-  position: absolute;
   font-size: 12px;
-  color: #838080;
-  top: -20px; /* 시간 표시가 상태바의 바로 위에 위치하도록 설정 */
+  color: #666;
+  width: 35px;
+  text-align: center;
 }
 
-.left {
-  left: 0;
+/* 정보 창 스타일 */
+.info-window {
+  padding: 5px;
+  text-align: center;
+  font-size: 14px;
+  color: #333;
 }
 
-.right {
-  right: 0;
+/* 애니메이션 추가 */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s;
+}
+
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
 }
 
 .category-buttons {

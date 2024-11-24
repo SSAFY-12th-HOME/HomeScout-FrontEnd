@@ -10,6 +10,7 @@ import QuizSolveView from '@/views/QuizSolveView.vue'
 import MypageView from '@/views/MypageView.vue'
 import QuizView from '@/views/QuizView.vue'
 import QuizCreateView from '@/views/QuizCreateView.vue'
+import NoticeDetailView from '@/views/NoticeDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,7 +58,7 @@ const router = createRouter({
       path: '/mypage',
       name: 'mypage',
       component: MypageView,
-      meta: { requiresAuth: true }, 
+      meta: { requiresAuth: true },
     },
     {
       path: '/quiz',
@@ -76,7 +77,12 @@ const router = createRouter({
       name: 'quiz-solve',
       component: QuizSolveView,
       meta: { requiresAuth: true }
-    }
+
+    },
+    { path: "/notice/:id",
+      name: "NoticeDetail",
+      component: NoticeDetailView
+    },
   ],
 })
 
