@@ -30,5 +30,6 @@ defineProps({
   align-items: center;
   justify-content: center;
   font-size: 20px;
+  box-shadow: 0 5px 5px -5px
 }
 </style>

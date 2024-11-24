@@ -36,6 +36,7 @@ defineEmits(['click'])
   background-color: white;
   font-size: 16px;
   margin: 10px;
+  box-shadow: 0 5px 5px -5px
 }
 
 .custom-button-active {
