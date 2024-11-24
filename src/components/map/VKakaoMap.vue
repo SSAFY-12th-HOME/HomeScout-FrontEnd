@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch,onBeforeUnmount } from 'vue'
 import { KakaoMap, KakaoMapMarker } from 'vue3-kakao-maps'
 import { getPodcastData, getSafetyScore } from '@/api/map' // API 요청 함수
 import sgg from '@/assets/sgg.json';
@@ -14,6 +14,21 @@ const progress = ref(0) // 진행 상태바 (진행 정도)
 const currentTime = ref('0:00') // 현재 시간
 const duration = ref('0:00') // 전체 시간
 const audioElement = ref()
+
+
+// 로딩 관련 상태 변수 추가
+const isLoading = ref(false) // 로딩 모달 표시 여부
+const loadingTexts = ref([
+  "뉴스기사를 분석하고 있어요.",
+  "목소리를 만들고 있어요.",
+  "조금만 더 기다려 주세요."
+]) // 로딩 중 표시할 텍스트 배열
+const currentLoadingText = ref("") // 현재 표시 중인 로딩 텍스트
+const loadingTextIndex = ref(0) // 현재 로딩 텍스트의 인덱스
+let loadingTimer = null // 로딩 텍스트 변경 타이머
+let loadingTimeout = null // 로딩 완료 타이머
+
+
 
 const markerList = ref([])
 const map = ref()
@@ -152,6 +167,23 @@ const getCenterCoordinates = () => {
 
 // 팟캐스트 URL을 요청하고 받아오는 함수
 const navigateToNews = async () => {
+
+  // 1. 버튼 클릭 시 로딩 모달을 먼저 표시
+  isLoading.value = true
+  isModalVisible.value = false
+
+  // 2. 초기 로딩 텍스트 설정
+  currentLoadingText.value = loadingTexts.value[loadingTextIndex.value]
+
+  // 3. 로딩 텍스트 애니메이션 타이머 시작 (1.5초 간격으로 텍스트 변경)
+  loadingTimer = setInterval(() => {
+    loadingTextIndex.value = (loadingTextIndex.value + 1) % loadingTexts.value.length
+    currentLoadingText.value = loadingTexts.value[loadingTextIndex.value]
+  }, 2000) //2초
+
+  // 4. 전체 로딩 시간 설정 (4.5초 후 팟캐스트 모달 표시)
+  loadingTimeout = setTimeout(async () => {
+
   const { lat, lng } = getCenterCoordinates()
 
   if (lat && lng) {
@@ -160,12 +192,26 @@ const navigateToNews = async () => {
       podcastUrl.value = data.podcastUrl // mp3 URL 저장
       currentDistrictName.value = data.districtName // 시군구 이름 저장
 
+      // 로딩 모달 숨기기 및 팟캐스트 모달 표시
+      isLoading.value = false
+      loadingTextIndex.value = 0
       isModalVisible.value = true // 모달창 보이게 설정
     } catch (error) {
       console.error('Error loading podcast:', error)
+      isLoading.value = false
+      loadingTextIndex.value = 0
     }
   }
+    // 타이머 정리
+    clearInterval(loadingTimer)
+  }, 5500) // 4.5초 후 실행
 }
+
+onBeforeUnmount(() => {
+  // 컴포넌트가 파괴될 때 타이머 정리
+  clearInterval(loadingTimer)
+  clearTimeout(loadingTimeout)
+})
 
 const closeModal = () => {
   isModalVisible.value = false // 모달창 닫기
@@ -188,14 +234,17 @@ const playPodcast = () => {
   isPlaying.value = !isPlaying.value // 재생/일시정지 토글
 }
 
-// 오디오 진행 상태 업데이트 (수정된 부분)
+// 오디오 진행 상태 업데이트
 const onTimeUpdate = () => {
   if (audioElement.value) {
-    const current = audioElement.value.currentTime // 현재 시간
-    const totalDuration = audioElement.value.duration // 전체 시간
-    progress.value = (current / totalDuration) * 100 // 진행 상태 비율
-    currentTime.value = formatTime(current) // 현재 시간 포맷
-    duration.value = formatTime(totalDuration) // 전체 시간 포맷
+    const current = audioElement.value.currentTime
+    const totalDuration = audioElement.value.duration
+
+    // 진행 상태 계산 (0~100 비율로 설정)
+    progress.value = totalDuration > 0 ? (current / totalDuration) * 100 : 0
+
+    // 현재 시간을 업데이트
+    currentTime.value = formatTime(current)
   }
 }
 
@@ -206,12 +255,14 @@ const formatTime = (timeInSeconds) => {
   return `${minutes}:${seconds < 10 ? '0' + seconds : seconds}` // 0초 미만일 때 0 추가
 }
 
-// 진행 상태 바 조정 (수정된 부분)
+// 진행 상태 바 조정
 const seekAudio = () => {
-  if (audioElement.value) {
-    audioElement.value.currentTime = (progress.value / 100) * audioElement.value.duration // 사용자가 슬라이드를 조정하여 위치 이동
+  if (audioElement.value && audioElement.value.duration) {
+    // 슬라이더의 값(progress.value)을 기반으로 currentTime 설정
+    audioElement.value.currentTime = (progress.value / 100) * audioElement.value.duration
   }
 }
+
 
 const onLoadedMetadata = () => {
   if (audioElement.value) {
@@ -312,6 +363,25 @@ const removeArea = () => {
     </button>
   </div>
 
+  <!-- 로딩 모달 창 추가 -->
+  <transition name="fade">
+    <div v-if="isLoading" class="modal">
+      <div class="modal-content">
+        <!-- 로딩 비디오 -->
+        <video src="@/assets/loading3.webm" autoplay loop muted class="loading-video"></video>
+
+        <!-- 로딩 텍스트 컨테이너 -->
+        <div class="loading-text-container">
+          <!-- 로딩 텍스트 애니메이션: <transition> 추가 및 key 속성 사용 -->
+          <transition name="fade-text">
+            <div class="loading-text" :key="currentLoadingText">{{ currentLoadingText }}</div>
+          </transition>
+        </div>
+      </div>
+    </div>
+  </transition>
+
+
   <!-- 팟캐스트 모달 창 -->
   <transition name="fade">
     <div v-if="isModalVisible" class="modal">
@@ -378,6 +448,7 @@ const removeArea = () => {
                   v-model="progress"
                   min="0"
                   max="100"
+                  step="0.1"
                   @input="seekAudio"
                   class="progress-bar"
                 />
@@ -711,14 +782,12 @@ const removeArea = () => {
   align-items: center;
   gap: 12px;
 }
-.progress-bar {
 
-}
 .progress-bar-wrapper {
-  flex: 1;
   position: relative;
+  width: 100%;
   height: 6px;
-  background: #e9ecef;
+  background: #e9ecef; /* 기본 배경 */
   border-radius: 3px;
 }
 
@@ -727,35 +796,39 @@ const removeArea = () => {
   left: 0;
   top: 0;
   height: 100%;
-  background: linear-gradient(to right, #11cbbb, #66b56b);
+  width: 0%; /* 초기 너비 */
+  background: linear-gradient(to right, #11cbbb, #66b56b); /* 색상 그라데이션 */
   border-radius: 3px;
-  pointer-events: none;
+  transition: width 0.1s ease; /* 부드러운 전환 효과 */
+  z-index: 5;
 }
 
 input[type='range'] {
-  flex: 1;
-  margin: 0 10px;
-  -webkit-appearance: none;
-  height: 5px;
-  border-radius: 5px;
-  outline: none;
+  -webkit-appearance: none; /* 기본 브라우저 스타일 제거 */
+  position: relative;
+  width: 100%;
+  height: 6px;
+  background: transparent; /* 슬라이더 트랙을 투명하게 설정 */
+  z-index: 0; /* 슬라이더 손잡이가 재생 바 위에 표시되도록 설정 */
+  transition: width 0.1s ease; /* 부드러운 전환 효과 */
 }
 input[type='range']::-webkit-slider-runnable-track {
   width: 100%;
   height: 0;
-  background: #e9ecef; /* 트랙의 기본 색상 */
+  background: transparent; /* 트랙 배경을 투명하게 설정 */
   border-radius: 0px;
+  z-index: 0;
 }
 
+/* 손잡이 스타일링 (Chrome, Edge, Safari) */
 input[type='range']::-webkit-slider-thumb {
-  -webkit-appearance: none; /* 기본 브라우저 스타일 제거 */
-  width: 16px;
-  height: 16px;
-  background: #e9ecef; /* 슬라이더의 손잡이 색상 */
-  border-radius: 50%;
-  cursor: pointer;
-  position: relative;
-  z-index: 0; /* 트랙보다 밑에 표시 */
+  -webkit-appearance: none;
+  width: 40px; /* 손잡이 너비 */
+  height: 40px; /* 손잡이 높이 */
+  background: #e9ecef; /* 손잡이 색상 */
+  border-radius: 50%; /* 손잡이를 원형으로 설정 */
+  cursor: pointer; /* 클릭 시 손 모양 커서 표시 */
+  margin-top: -17px; /* 트랙과 손잡이 정렬 */
 }
 
 .time {
@@ -771,15 +844,6 @@ input[type='range']::-webkit-slider-thumb {
   text-align: center;
   font-size: 14px;
   color: #333;
-}
-
-/* 애니메이션 추가 */
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.3s;
-}
-
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
 }
 
 .category-buttons {
@@ -820,4 +884,108 @@ input[type='range']::-webkit-slider-thumb {
   outline: none;
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
 }
+
+
+/* 로딩 모달 비디오 스타일 */
+.loading-video {
+  width: 200px;  /* 원하는 크기로 조정 (예: 200px) */
+  height: auto;
+  border-radius: 16px;
+  margin: 0 auto;  /* 수평 중앙 정렬 */
+  display: block;  /* 블록 요소로 설정 */
+}
+
+/* 로딩 텍스트 스타일 */
+.loading-text {
+  text-align: center;
+  font-size: 1.2em;
+  color: #333;
+  //animation: fadeIn 0.5s ease-in-out;
+}
+
+/* 텍스트 페이드 인 애니메이션 */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 추가된 로딩 텍스트 애니메이션 */
+.fade-text-enter-active, .fade-text-leave-active {
+  transition: opacity 0.9s;
+}
+
+.fade-text-enter-from, .fade-text-leave-to {
+  opacity: 0;
+}
+
+/* "fade" 전환 애니메이션 정의 */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+
+
+/* 로딩 텍스트 스타일 */
+.loading-text {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  position: absolute; /* 텍스트를 절대 위치로 설정하여 겹치지 않도록 함 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 1.2em;
+  color: #2c3e50;
+  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+}
+
+/* 로딩 텍스트 하이라이트 효과 */
+.loading-text::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -15px;
+  height: 5px;
+  width: 100%;
+  background: linear-gradient(90deg, #3498db, #2ecc71, #3498db, #32ce92);
+  background-size: 200% 100%;
+  animation: gradientSlide 2s linear infinite;
+  border-radius: 2px;
+  margin-top: 5px;
+}
+
+
+/* 로딩 텍스트 컨테이너 스타일 */
+.loading-text-container {
+  width: 100%;
+  min-height: 3em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-top: 1rem;
+}
+
+/* 그라데이션 슬라이드 애니메이션 */
+@keyframes gradientSlide {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+/* 점 애니메이션 */
+@keyframes dotAnimation {
+  0% { content: "."; }
+  33% { content: ".."; }
+  66% { content: "..."; }
+  100% { content: ""; }
+}
+
 </style>
