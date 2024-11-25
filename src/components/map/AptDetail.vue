@@ -139,7 +139,7 @@ const handleRefresh = () => {
 /* empty-message 수정된 스타일 */
 .empty-message {
   /* 기본 텍스트 스타일 */
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   color: #64748b;  /* 부드러운 슬레이트 컬러 */
   font-weight: 500;
   text-align: center;
@@ -156,7 +156,7 @@ const handleRefresh = () => {
 
 /* 이미지 스타일 */
 .empty-img {
-  width: 180px;  /* 이미지 크기 조절 */
+  width: 120px;  /* 이미지 크기 조절 */
   height: auto;
   animation: fadeIn 0.6s ease-out forwards;
 }

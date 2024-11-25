@@ -200,6 +200,7 @@ const navigateToNews = async () => {
   // 1. 버튼 클릭 시 로딩 모달을 먼저 표시
   isLoading.value = true
   isModalVisible.value = false
+  document.querySelector('.tab-container').style.zIndex = 0
 
   // 2. 초기 로딩 텍스트 설정
   currentLoadingText.value = loadingTexts.value[loadingTextIndex.value]
@@ -242,7 +243,7 @@ onBeforeUnmount(() => {
   clearTimeout(loadingTimeout)
 })
 
-const closeModal = () => {
+ const closeModal = async () => {
   isModalVisible.value = false // 모달창 닫기
   isPlaying.value = true // 오디오 재생 상태를 초기화
   progress.value = 0 // 진행 상태 바 초기화
@@ -250,6 +251,9 @@ const closeModal = () => {
   duration.value = '0:00' // 전체 시간 초기화
   podcastUrl.value = '' // 팟캐스트 URL 초기화
   currentDistrictName.value = '' // 팟캐스트 시군구 이름 초기화
+  await new Promise((resolve) => setTimeout(resolve, 1000))
+  document.querySelector('.tab-container').style.zIndex = 2
+
 }
 
 const playPodcast = () => {
