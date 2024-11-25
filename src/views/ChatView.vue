@@ -83,9 +83,10 @@ const toggleChatList = chatStore.toggleChatList
   right: 20px;
   width: 400px;
   height: 700px;
-  border-radius: 10px;
+  border-radius: 28px;
   overflow: hidden;
   z-index: 999;
+  box-shadow: 0px 0px 30px rgba(0,0,0,0.25);
 }
 
 .close-button {
@@ -115,6 +116,6 @@ const toggleChatList = chatStore.toggleChatList
 }
 
 .new {
-  background-color: red;
+  background-color: #e75656;
 }
 </style>

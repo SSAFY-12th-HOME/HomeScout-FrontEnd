@@ -48,6 +48,7 @@
           type="text"
           class="search-input"
           placeholder="제목, 내용"
+          @keyup.enter="searchNotices"
         />
         <button
           @click="searchNotices"

@@ -34,7 +34,7 @@ const onSearch = () => {
   justify-content: center;
   padding: 0px 0;
   background-color: transparent;
-  padding: 10px 10px; 
+  padding: 10px 10px;
   background-color: #66b56b;
   box-shadow: 10px 10px 0px #ececec;
 }
@@ -93,10 +93,10 @@ button {
 }
 
 button:hover {
-  background-color: #1d4ed8;
+  background-color: #66b56b;
 }
 
 button:active {
-  background-color: #1e40af;
+  background-color: #9a9a9a;
 }
 </style>

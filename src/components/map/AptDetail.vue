@@ -67,7 +67,11 @@ const handleRefresh = () => {
   </div>
   <PerfectScrollbar>
     <div v-if="apt.length === 0" class="container" style="background-color: white">
-      <h2 class="empty-message">아파트를 선택해 주세요!</h2>
+      <div class="empty-state">
+        <img src="@/assets/house.png" class="empty-img">
+        <h2 class="empty-message">아파트를 선택해 주세요!</h2>
+      </div>
+
     </div>
     <div v-else class="container">
       <div class="apt-container">
@@ -98,7 +102,6 @@ const handleRefresh = () => {
 
 <style scoped>
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-/* @import 'vue3-perfect-scrollbar/style.css'; */
 
 * {
   margin: 0;
@@ -108,16 +111,13 @@ const handleRefresh = () => {
   word-break: break-all;
   font-family: Pretendard;
 }
+
 .container {
-  /* 컨테이너의 높이를 뷰포트 높이로 설정 */
   height: 78.9vh;
-  /* 또는 특정 높이로 설정할 수 있습니다 */
-  /* height: 800px; */
   padding: 0 0;
 }
 
 .apt-container {
-  /* 컨테이너 기본 설정 */
   height: 100%;
 }
 
@@ -126,9 +126,57 @@ const handleRefresh = () => {
   background-color: #ececec;
 }
 
+/* empty state 컨테이너 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;  /* 이미지와 텍스트 사이 간격 */
+  /* 추가: 위쪽으로 살짝 올려서 시각적 중앙 조정 */
+  transform: translateY(80%);
+}
+
+/* empty-message 수정된 스타일 */
 .empty-message {
+  /* 기본 텍스트 스타일 */
+  font-size: 1.25rem;
+  color: #64748b;  /* 부드러운 슬레이트 컬러 */
+  font-weight: 500;
   text-align: center;
-  padding: 20px;
-  font-size: 30px;
+
+  /* 위치 조정 */
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+
+  /* 부드러운 애니메이션 */
+  opacity: 0;
+  animation: gentleFade 0.5s ease-out forwards;
+}
+
+/* 이미지 스타일 */
+.empty-img {
+  width: 180px;  /* 이미지 크기 조절 */
+  height: auto;
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* 심플한 페이드인 애니메이션 */
+@keyframes gentleFade {
+  from {
+    opacity: 0;
+    transform: translateY(-45%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%);
+  }
+}
+
+/* 반응형 대응 */
+@media (max-width: 768px) {
+  .empty-message {
+    font-size: 1.1rem;
+  }
 }
 </style>

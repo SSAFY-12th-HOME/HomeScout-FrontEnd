@@ -40,24 +40,11 @@ const getActiveRoom = computed(() => {
   return chatStore.chatRooms.find((room) => room.chatRoomId === chatStore.activeRoom)
 })
 
-// 채팅방 선택 시 호출되는 함수 수정
-const toggleRoom = async (roomId) => {
-  chatStore.activeRoom = roomId
-  await chatStore.fetchMessages(roomId)
-  // 메시지 로드 후 스크롤 처리 추가
-  nextTick(() => {
-    const chatContainer = document.querySelector('.chat-messages')
-    if (chatContainer) {
-      chatContainer.scrollTop = chatContainer.scrollHeight
-    }
-  })
-}
 
 // 채팅방 닫기 함수 수정
 const closeRoom = () => {
   // 채팅방 목록 새로고침 추가
   chatStore.fetchChatRooms()
-  chatStore.activeRoom = null
 }
 
 // 메시지 전송 핸들러 수정
@@ -130,10 +117,10 @@ onMounted(() => {
   background: white;
   height: 100%;
   border-radius: 28px; /* Added */
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Added */
+
+  transition: all 0.3s ease;   /* 부드러운 애니메이션 효과 */
   overflow: hidden; /* Added to prevent content from overflowing rounded corners */
+
 }
 
 .chat-room-list {
