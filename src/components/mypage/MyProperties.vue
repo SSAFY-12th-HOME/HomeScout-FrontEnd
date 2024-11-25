@@ -126,7 +126,7 @@ const getPrice = (type, price, deposit, rentalFee) => {
 
         <div class="agent-info">
           <div class="agent">
-            <img src="/src/assets/default-profile-img.png" :alt="property.realtor.nickname" class="agent-image">
+            <img :src="property.realtor.profileImg === null ? '/src/assets/default-profile-img.png' : property.realtor.profileImg" :alt="property.realtor.nickname" class="agent-image">
             <span class="agent-name">{{ property.realtor.nickname }}</span>
           </div>
           <span class="agent-phone">{{ property.realtor.phone }}</span>

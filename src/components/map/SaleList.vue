@@ -311,7 +311,7 @@ const handleRegisterSuccess = () => {
         <div class="agent-info">
           <div class="agent">
             <img
-              src="/src/assets/default-profile-img.png"
+              :src="property.realtor.profileImg === null ? '/src/assets/default-profile-img.png' : property.realtor.profileImg"
               :alt="property.realtor.nickname"
               class="agent-image"
             />
