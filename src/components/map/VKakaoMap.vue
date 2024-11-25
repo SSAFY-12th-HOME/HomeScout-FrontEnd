@@ -84,7 +84,8 @@ watch(
       }
       return marker
     })
-    panTo(markerList.value[0].lat, markerList.value[0].lng)
+    setCenter(markerList.value[0].lat, markerList.value[0].lng)
+    setLevel('6')
   },
 )
 
@@ -178,6 +179,12 @@ const panTo = (lat, lng) => {
     map.value.panTo(new window.kakao.maps.LatLng(lat, lng))
   }
 }
+
+const setCenter = (lat, lng) => {
+  if (map.value) {
+    map.value.setCenter(new window.kakao.maps.LatLng(lat, lng));
+  }
+};
 
 const setLevel = (level) => {
   if (map.value) {
