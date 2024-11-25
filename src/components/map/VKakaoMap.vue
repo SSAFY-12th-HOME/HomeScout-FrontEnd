@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch,onBeforeUnmount } from 'vue'
-import { KakaoMap, KakaoMapMarker } from 'vue3-kakao-maps'
+import { KakaoMap, KakaoMapCustomOverlay } from 'vue3-kakao-maps'
 import { getPodcastData, getSafetyScore, getSidoCenter } from '@/api/map' // API 요청 함수
 import sgg from '@/assets/sgg.json';
 
@@ -33,7 +33,6 @@ let loadingTimeout = null // 로딩 완료 타이머
 const markerList = ref([])
 const map = ref()
 const clusterer = ref()
-const markerIcon = '/src/assets/house-marker-icon.png'
 const markerSelectIcon = '/src/assets/house-marker-select-icon.png'
 
 const selectedSido = ref('')
@@ -74,12 +73,14 @@ watch(
         aptNm: apt.aptNm,
         lat: apt.latitude,
         lng: apt.longitude,
-        icon: markerIcon,
+        dealAmount: apt.dealAmount,
+        area: apt.area,
         zindex: 0,
+        clicked: false
       }
       if (newList.length === 1) {
         marker.icon = markerSelectIcon
-        marker.zindex = 1
+        marker.zindex = 5
       }
       return marker
     })
@@ -164,11 +165,11 @@ const onLoadKakaoMapMarkerCluster = (clustererRef) => {
 const onClickKakaoMapMarker = (marker) => {
   emit('markerClickEvent', marker.aptId)
   markerList.value.forEach((m) => {
-    m.icon = markerIcon
     m.zindex = 0
+    m.clicked = false
   })
-  marker.icon = markerSelectIcon
-  marker.zindex = 1
+  marker.zindex = 10
+  marker.clicked = true
   panTo(marker.lat, marker.lng)
 }
 
@@ -339,6 +340,16 @@ const removeArea = () => {
   polygons.value.forEach(polygon => polygon.setMap(null))
   polygons.value = []
 }
+
+const onMouseOverKakaoMapMarker = (marker) => {
+  if(marker.clicked) return  
+  marker.zindex = 15
+}
+
+const onMouseOutKakaoMapMarker = (marker) => {
+  if(marker.clicked) return
+  marker.zindex = 0
+}
 </script>
 
 <template>
@@ -351,25 +362,50 @@ const removeArea = () => {
     @onLoadKakaoMap="onLoadKakaoMap"
     @onLoadKakaoMapMarkerCluster="onLoadKakaoMapMarkerCluster"
   >
-    <KakaoMapMarker
+    <KakaoMapCustomOverlay 
       v-for="marker in markerList"
       :key="marker.aptId"
-      :lat="marker.lat"
-      :lng="marker.lng"
+      :lat="marker.lat" :lng="marker.lng"
       :clickable="true"
-      :image="{
-        imageSrc: marker.icon,
-        imageWidth: 27,
-        imageHeight: 32,
-        imageOption: {},
-      }"
       :z-index="marker.zindex"
-      @onClickKakaoMapMarker="onClickKakaoMapMarker(marker)"
     >
-      <template v-if="marker.zindex === 1" v-slot:infoWindow>
-        <div class="info-window">{{ marker.aptNm }}</div>
-      </template>
-    </KakaoMapMarker>
+    <button 
+      @click="onClickKakaoMapMarker(marker)"
+      style="
+        position: relative;
+        background: #1EC800; /* 배경색을 초록색으로 변경 */
+        border: none;
+        border-radius: 8px; 
+        padding: 8px 14px; 
+        cursor: pointer; 
+        line-height: 1.5;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        transition: all 0.2s ease;
+        min-width: 50px;
+        text-align: center;
+        padding: 6px 6px;
+      "
+      onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 8px rgba(0, 0, 0, 0.2)'"
+      @mouseover="onMouseOverKakaoMapMarker(marker)"
+      onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 6px rgba(0, 0, 0, 0.15)'"
+      @mouseout="onMouseOutKakaoMapMarker(marker)"
+    >
+      <span style="display: block; font-size: 11px; font-weight: 500; color: rgba(255, 255, 255, 0.9); margin-bottom: 0px;">{{ marker.area }}</span>
+      <span style="display: block; font-size: 13px; font-weight: 700; color: white;">{{ marker.dealAmount }}</span>
+      <span style="
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-top: 8px solid #1EC800; /* 화살표 색상도 초록색으로 변경 */
+        filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.15));
+      "></span>
+      </button>
+    </KakaoMapCustomOverlay>
   </KakaoMap>
 
   <div class="category-buttons">
@@ -928,7 +964,7 @@ input[type='range']::-webkit-slider-thumb {
   text-align: center;
   font-size: 1.2em;
   color: #333;
-  //animation: fadeIn 0.5s ease-in-out;
+  /*animation: fadeIn 0.5s ease-in-out;*/
 }
 
 /* 텍스트 페이드 인 애니메이션 */
@@ -979,7 +1015,7 @@ input[type='range']::-webkit-slider-thumb {
   bottom: -15px;
   height: 5px;
   width: 100%;
-  background: linear-gradient(90deg, #3498db, #2ecc71, #3498db, #32ce92);
+  background: linear-gradient(90deg, #3498db, #2ecc71, #3498db, #32ce6b);
   background-size: 200% 100%;
   animation: gradientSlide 2s linear infinite;
   border-radius: 2px;

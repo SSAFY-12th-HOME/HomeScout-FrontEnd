@@ -25,12 +25,6 @@ watch(
     <table>
 			<tbody>
 				<tr>
-					<th>세대 수</th>
-					<td>{{ apt.homeCnt }}</td>
-				</tr>
-			</tbody>
-			<tbody>
-				<tr>
 					<th>준공연도</th>
 					<td>{{ apt.buildYear }}년 ({{ 2025 - apt.buildYear }}년차)</td>
 				</tr>
