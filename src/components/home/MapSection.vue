@@ -2,8 +2,8 @@
   <div class="container">
     <div class="content-wrapper">
       <!-- Left text content -->
-      <div class="text-content" data-aos="fade-right" data-aos-duration="1000">
-        <h2>지도 보기</h2>
+      <div class="text-content" data-aos="fade-right" data-aos-duration="1000" data-aos-delay="150">
+        <h2 class="section-title">지도 보기</h2>
         <div class="text-block">
           <p>나의 보금자리 선택,</p>
           <p>명확한 시각적 정보로</p>
@@ -13,7 +13,7 @@
       </div>
 
       <!-- Right map images -->
-      <div class="map-content" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="500">
+      <div class="map-content" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="150">
         <div class="map-box map-vertical">
           <img src="/src/assets/map01.png" alt="Map view 1" />
         </div>
@@ -153,6 +153,13 @@ onMounted(() => {
 
 /* 기존 이미지 호버 효과 제거 */
 /* .map-box img:hover {
-    transform: scale(1.05); 
+    transform: scale(1.05);
   } */
+
+.section-title {
+  font-size: 4rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  margin-bottom: 3rem; /* 아래 여백 */
+}
 </style>

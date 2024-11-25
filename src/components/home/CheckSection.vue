@@ -9,7 +9,7 @@
           <p>다시 한 번 확인해보세요.</p>
         </h2>
         <!-- AOS 애니메이션을 버튼의 부모에 적용 -->
-        <div data-aos="zoom-in" data-aos-duration="1000" data-aos-delay="400">
+        <div data-aos="zoom-in" data-aos-duration="1000" data-aos-delay="100">
           <button class="diagnosis-button">전세 진단하기</button>
         </div>
       </div>

@@ -15,6 +15,7 @@ import AOS from 'aos'
 
 import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import EndSection from "@/components/home/EndSection.vue";
 
 const route = useRoute()
 const fullPageRef = ref(null) // FullPage.js 참조 추가
@@ -68,7 +69,7 @@ const options = {
       animations.forEach((element) => {
         element.classList.add('aos-animate') // AOS 애니메이션 클래스 추가
       })
-    }, 300) // 300밀리초 후에 실행
+    }, 200) // 300밀리초 후에 실행
   },
 }
 
@@ -123,6 +124,10 @@ function triggerAOS() {
 
     <div class="section">
       <CheckSection />
+    </div>
+
+    <div class="section">
+      <EndSection />
     </div>
   </full-page>
 </template>

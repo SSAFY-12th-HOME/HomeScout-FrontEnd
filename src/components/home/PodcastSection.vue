@@ -2,7 +2,7 @@
   <div class="container">
     <div class="content-wrapper">
       <!-- Left text content -->
-      <div class="text-content" data-aos="fade-right" data-aos-duration="1000" data-aos-delay="200">
+      <div class="text-content" data-aos="fade-right" data-aos-duration="1000" data-aos-delay="150">
         <h3 class="section-title">AI 팟캐스트</h3>
         <h2 class="main-heading">
           <p>나만의 맞춤형 AI 팟캐스트로</p>
@@ -20,9 +20,9 @@
       </div>
 
       <!-- Right content -->
-      <div class="podcast-content" data-aos="zoom-in" data-aos-duration="1000" data-aos-delay="200">
+      <div class="podcast-content" data-aos="zoom-in" data-aos-duration="1000" data-aos-delay="150">
         <!-- First Quote -->
-        <div class="quote-box" data-aos="fade-right" data-aos-duration="1000" data-aos-delay="800">
+        <div class="quote-box" data-aos="fade-right" data-aos-duration="1000" data-aos-delay="700">
           <p class="quote-text align-right">
             "최근 몇 년 동안 가격이 <br />
             급등하면서, 특히 서울<br />

@@ -24,14 +24,14 @@
     </div>
 
     <!-- Bottom Section -->
-    <div class="bottom-section" data-aos-delay="600">
+    <div class="bottom-section" data-aos-delay="500">
       <!-- Left Quiz Card -->
       <div class="bottom-content">
         <div
           class="image-content"
           data-aos="fade-left"
           data-aos-duration="1000"
-          data-aos-delay="600"
+          data-aos-delay="500"
         >
           <img src="/src/assets/quiz02.png" alt="Quiz card" class="quiz-card-image" />
         </div>
@@ -103,7 +103,7 @@ onMounted(() => {
 }
 
 .section-title {
-  font-size: 3rem;
+  font-size: 3.5rem;
   font-weight: bold;
   color: #66b56b;
   margin-bottom: 1rem;
