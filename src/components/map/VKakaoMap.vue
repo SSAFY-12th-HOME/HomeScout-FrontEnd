@@ -207,7 +207,7 @@ const navigateToNews = async () => {
   loadingTimer = setInterval(() => {
     loadingTextIndex.value = (loadingTextIndex.value + 1) % loadingTexts.value.length
     currentLoadingText.value = loadingTexts.value[loadingTextIndex.value]
-  }, 2000) //2초
+  }, 2200) //2초
 
   // 4. 전체 로딩 시간 설정 (4.5초 후 팟캐스트 모달 표시)
   loadingTimeout = setTimeout(async () => {
@@ -232,7 +232,7 @@ const navigateToNews = async () => {
   }
     // 타이머 정리
     clearInterval(loadingTimer)
-  }, 5500) // 4.5초 후 실행
+  }, 4500) // 4.5초 후 실행
 }
 
 onBeforeUnmount(() => {
@@ -396,7 +396,7 @@ const removeArea = () => {
     <div v-if="isLoading" class="modal">
       <div class="modal-content">
         <!-- 로딩 비디오 -->
-        <video src="@/assets/loading3.webm" autoplay loop muted class="loading-video"></video>
+        <video src="@/assets/loading7.webm" autoplay loop muted class="loading-video"></video>
 
         <!-- 로딩 텍스트 컨테이너 -->
         <div class="loading-text-container">
@@ -548,7 +548,6 @@ const removeArea = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 100;
 }
 
 .modal-content {
@@ -559,6 +558,7 @@ const removeArea = () => {
   max-width: 500px;
   position: relative;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  z-index: 100;
 }
 
 /* 새로운 title-section 스타일 */
@@ -919,7 +919,7 @@ input[type='range']::-webkit-slider-thumb {
   width: 200px;  /* 원하는 크기로 조정 (예: 200px) */
   height: auto;
   border-radius: 16px;
-  margin: 0 auto;  /* 수평 중앙 정렬 */
+  margin: 50px auto;  /* 수평 중앙 정렬 */
   display: block;  /* 블록 요소로 설정 */
 }
 
