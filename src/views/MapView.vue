@@ -77,13 +77,15 @@ const onSearchApt = (searchQuery) => {
   getAptIdByAptName(
     searchQuery,
     ({ data }) => {
-      aptId.value = data.aptId;
-      aptList.value = [data];
+      console.log(data)
+      aptId.value = data[0].aptId
+      aptList.value = data
     },
     (err) => {
       errorStore.showError(err.response.data.message)
     }
   )
+
 }
 </script>
 
