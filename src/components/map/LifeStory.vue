@@ -212,7 +212,7 @@ watch(
 .header-left {
   display: flex;
   align-items: center;
-  gap: 8rem;
+  gap: 10.5rem;
 }
 
 .header-left h2 {

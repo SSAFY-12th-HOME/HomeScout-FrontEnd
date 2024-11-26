@@ -152,7 +152,7 @@ const handleQuizList = () => {
   /* 요소 변화에 대한 부드러운 전환 효과 */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 
-  margin-top: 30px;
+  margin-top: 70px;
 }
 
 /* hover 시 입체감 강화 */
@@ -167,7 +167,7 @@ const handleQuizList = () => {
     0 16px 32px rgba(0, 0, 0, 0.1);
 }
 .swiper-slide {
-  height: 72vh
+  height: 63vh
 }
 
 </style>

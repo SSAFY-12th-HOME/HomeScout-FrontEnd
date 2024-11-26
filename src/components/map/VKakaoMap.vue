@@ -928,7 +928,7 @@ input[type='range']::-webkit-slider-thumb {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 35px; /* 버튼들의 동일한 너비 설정 */
+  width: 45px; /* 버튼들의 동일한 너비 설정 */
   z-index:10
 }
 
@@ -939,11 +939,12 @@ input[type='range']::-webkit-slider-thumb {
   border: 1px solid #ababab;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
   text-align: center;
   transition: all 0.2s ease;
   box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-  font-weight: 600
+  font-weight: 600;
+  height: 45px;
 }
 
 .category-button:hover {
@@ -951,7 +952,7 @@ input[type='range']::-webkit-slider-thumb {
 }
 
 .category-button.active {
-  background-color: #e6e6e6;
+  background-color: #a4dfae;
   border-color: #999;
 }
 

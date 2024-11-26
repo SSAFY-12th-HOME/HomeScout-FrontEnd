@@ -2,7 +2,7 @@ import axios from 'axios';
 
 function localAxios() {
   const instance = axios.create({
-    baseURL: 'http://localhost:8080/',
+    baseURL: 'http://172.20.10.5:8080/',
     headers: {
       // 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjQsImlhdCI6MTczMTg5Nzc0NSwiZXhwIjoxNzMxOTg0MTQ1fQ.kjjIqopqPDTx2tztDcicE4Qtg3tfggJed3OOFUQvGJQ',
       'Content-Type': 'application/json;charset=utf-8',
@@ -16,7 +16,7 @@ function localAxios() {
 
 function imageAxios() {
   const instance = axios.create({
-    baseURL: 'http://localhost:8080/',
+    baseURL: 'http://172.20.10.5:8080/',
     headers: {
       // 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjQsImlhdCI6MTczMTg5Nzc0NSwiZXhwIjoxNzMxOTg0MTQ1fQ.kjjIqopqPDTx2tztDcicE4Qtg3tfggJed3OOFUQvGJQ',
       'Content-Type': 'multipart/form-data',

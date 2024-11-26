@@ -37,7 +37,7 @@ export const connect = () => {
   }
 
   // STOMP 클라이언트를 사용하여 WebSocket 연결
-  const socket = new WebSocket('ws://localhost:8080/chat') // 백엔드 WebSocket 엔드포인트
+  const socket = new WebSocket('ws://172.20.10.5:8080/chat') // 백엔드 WebSocket 엔드포인트
 
   stompClient = Stomp.over(socket)
 

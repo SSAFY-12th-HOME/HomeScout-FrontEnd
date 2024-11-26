@@ -179,7 +179,7 @@ const handleFileChange = async (event) => {
         v-for="tab in tabs" 
         :key="tab.id"
         :class="['tab-button', { active: activeTab === tab.id }]"
-        @click="activeTab = tab.id"
+        @click="activeTab = tab.id;"
       >
         {{ tab.name }}
       </button>
@@ -235,8 +235,8 @@ const handleFileChange = async (event) => {
 
 .badge {
   position: absolute;
-  top: 17%;
-  left: 44.5%;
+  top: 12.2%;
+  left: 45.4%;
   font-size: 1.5rem;
   z-index: 5;
 }

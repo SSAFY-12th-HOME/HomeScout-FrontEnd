@@ -271,13 +271,13 @@ const removeFromWishlist = () => {
 }
 
 .quiz-title {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
   margin-bottom: 12px;
 }
 
 .quiz-description {
-  font-size: 14px;
+  font-size: 16px;
   color: #666;
   margin-bottom: 12px;
   line-height: 1.5;

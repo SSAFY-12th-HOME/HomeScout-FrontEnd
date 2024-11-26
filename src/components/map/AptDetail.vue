@@ -43,7 +43,7 @@ const fetchAptInfo = () => {
     },
   )
 
-  document.querySelector('.ps').scrollTo(0, 0)
+  // document.querySelector('.ps').scrollTo(0, 0)
 }
 
 watch(
@@ -113,7 +113,7 @@ const handleRefresh = () => {
 }
 
 .container {
-  height: 84.3vh;
+  height: 84.5vh;
   padding: 0 0;
 }
 
@@ -141,13 +141,7 @@ const handleRefresh = () => {
   /* 기본 텍스트 스타일 */
   font-size: 1.5rem;
   color: #64748b;  /* 부드러운 슬레이트 컬러 */
-  font-weight: 500;
   text-align: center;
-
-  /* 위치 조정 */
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
 
   /* 부드러운 애니메이션 */
   opacity: 0;
@@ -156,6 +150,7 @@ const handleRefresh = () => {
 
 /* 이미지 스타일 */
 .empty-img {
+  margin-top: 70px;
   width: 120px;  /* 이미지 크기 조절 */
   height: auto;
   animation: fadeIn 0.6s ease-out forwards;
