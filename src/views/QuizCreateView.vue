@@ -58,6 +58,7 @@ const addQuestion = () => {
 
 const updateQuestion = (index, updatedQuestion) => {
   questions.value[index] = updatedQuestion
+  console.log(updatedQuestion)
 }
 
 const makeQuiz = () => {
@@ -97,7 +98,7 @@ const makeQuiz = () => {
       <div class="description-section">
         <label class="required">지급 경험치</label>
         <div class="select-wrapper">
-          <select v-model="quiz.exp" style="min-width: 150px">
+          <select v-model="quiz.exp" @change="changeSelect" style="min-width: 150px">
             <option 
               v-for="exp in questionExps" 
               :key="exp.value" 

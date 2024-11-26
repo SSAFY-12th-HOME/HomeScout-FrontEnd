@@ -28,7 +28,8 @@
         <!-- 검색 결과를 기반으로 공지사항 목록 표시 -->
         <tr v-else v-for="(notice, index) in filteredNotices" :key="notice.noticeId">
           <td class="center">
-            <span class="notice-tag">공지</span>
+            <span v-if="index < 3" class="notice-tag">공지</span>
+            <span v-else>{{notice.noticeId}}</span>
           </td>
           <td>
             <!-- 공지 제목을 클릭하면 상세 페이지로 이동 -->
@@ -138,7 +139,7 @@ export default {
 /* 헤더 스타일 */
 .header {
   background-color: #f8f9fa;
-  padding: 24px 210px;
+  padding: 24px 300px;
   margin-bottom: 24px;
 }
 
@@ -166,7 +167,7 @@ export default {
 
 /* 공지사항 테이블 스타일 */
 .notice-container {
-  padding: 0 210px;
+  margin: 0 300px;
 }
 
 .notice-table {
@@ -263,7 +264,7 @@ export default {
 }
 
 .notice-link {
-  color: #66b56b;
+  color: #272727;
   text-decoration: none;
 }
 
