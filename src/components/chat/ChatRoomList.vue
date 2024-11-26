@@ -40,11 +40,24 @@ const getActiveRoom = computed(() => {
   return chatStore.chatRooms.find((room) => room.chatRoomId === chatStore.activeRoom)
 })
 
+// 채팅방 선택 시 호출되는 함수 수정
+const toggleRoom = async (roomId) => {
+  chatStore.activeRoom = roomId
+  await chatStore.fetchMessages(roomId)
+  // 메시지 로드 후 스크롤 처리 추가
+  nextTick(() => {
+    const chatContainer = document.querySelector('.chat-messages')
+    if (chatContainer) {
+      chatContainer.scrollTop = chatContainer.scrollHeight
+    }
+  })
+}
 
 // 채팅방 닫기 함수 수정
 const closeRoom = () => {
   // 채팅방 목록 새로고침 추가
   chatStore.fetchChatRooms()
+  chatStore.activeRoom = null
 }
 
 // 메시지 전송 핸들러 수정

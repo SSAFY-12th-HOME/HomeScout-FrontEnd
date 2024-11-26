@@ -36,4 +36,6 @@ onBeforeUnmount(() => {
   height: calc(100vh - var(--nav-height) - var(--footer-height));
   overflow: hidden;
 }
+
+
 </style>

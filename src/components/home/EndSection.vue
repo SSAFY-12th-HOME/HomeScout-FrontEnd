@@ -267,7 +267,7 @@ onMounted(() => {
     transform: translateY(0) rotate(0deg);
   }
   50% {
-    transform: translateY(-20px) rotate(5deg);
+    transform: translateY(-100px) rotate(10deg);
   }
 }
 

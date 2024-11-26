@@ -353,7 +353,7 @@ const removeArea = () => {
 }
 
 const onMouseOverKakaoMapMarker = (marker) => {
-  if(marker.clicked) return  
+  if(marker.clicked) return
   marker.zindex = 15
 }
 
@@ -368,27 +368,27 @@ const onMouseOutKakaoMapMarker = (marker) => {
     :lat="mapLat"
     :lng="mapLng"
     width="100%"
-    height="89vh"
+    height="93vh"
     :level="mapScale"
     @onLoadKakaoMap="onLoadKakaoMap"
     @onLoadKakaoMapMarkerCluster="onLoadKakaoMapMarkerCluster"
   >
-    <KakaoMapCustomOverlay 
+    <KakaoMapCustomOverlay
       v-for="marker in markerList"
       :key="marker.aptId"
       :lat="marker.lat" :lng="marker.lng"
       :clickable="true"
       :z-index="marker.zindex"
     >
-    <button 
+    <button
       @click="onClickKakaoMapMarker(marker)"
       style="
         position: relative;
         background: #1EC800; /* 배경색을 초록색으로 변경 */
         border: none;
-        border-radius: 8px; 
-        padding: 8px 14px; 
-        cursor: pointer; 
+        border-radius: 8px;
+        padding: 8px 14px;
+        cursor: pointer;
         line-height: 1.5;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
         transition: all 0.2s ease;

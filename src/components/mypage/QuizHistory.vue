@@ -74,14 +74,14 @@ const removeFromWishlist = () => {
           <h3 class="modal-title">나의 매물에서 삭제</h3>
           <p class="modal-message">내가 등록한 매물을 삭제하시겠습니까?</p>
           <div class="modal-buttons">
-            <button 
-              class="modal-button cancel-button" 
+            <button
+              class="modal-button cancel-button"
               @click="closeConfirmModal"
             >
               취소
             </button>
-            <button 
-              class="modal-button confirm-button" 
+            <button
+              class="modal-button confirm-button"
               @click="removeFromWishlist"
             >
               확인
@@ -102,26 +102,26 @@ const removeFromWishlist = () => {
       <div v-for="quiz in quizzes" :key="quiz.quizId" class="quiz-card" :class="[{ 'quiz-card-solved': quiz.isSolve }]">
         <div class="quiz-header">
           <h2 class="quiz-title">{{ quiz.title }}</h2>
-          <Trash2 
-            class="heart-btn heart-active" 
+          <Trash2
+            class="heart-btn heart-active"
             @click="handleWishToggle(quiz.quizId)"
             size="25"
             stroke-width="2.25"
           />
         </div>
         <p class="quiz-description">{{ getDesc(quiz.desc) }}</p>
-        
+
         <div class="quiz-tags">
           <span class="tag">{{ quiz.tag1 }}</span>
           <span class="tag">{{ quiz.tag2 }}</span>
           <span class="tag">{{ quiz.tag3 }}</span>
         </div>
-        
+
         <div class="quiz-footer">
           <div class="author-info">
-            <img 
+            <img
               :src="quiz.writer.profileImg === null ? '/src/assets/default-profile-img.png' : quiz.writer.profileImg"
-              class="author-image" 
+              class="author-image"
             />
             <span class="author-name">{{ quiz.writer.nickname }}</span>
           </div>

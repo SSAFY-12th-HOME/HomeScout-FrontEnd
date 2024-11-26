@@ -113,7 +113,7 @@ const handleRefresh = () => {
 }
 
 .container {
-  height: 78.9vh;
+  height: 84.3vh;
   padding: 0 0;
 }
 

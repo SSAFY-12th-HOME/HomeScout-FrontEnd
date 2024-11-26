@@ -108,12 +108,14 @@ const onSearchApt = (searchQuery) => {
 </template>
 
 <style scoped>
+
 .main-container {
   display: flex;
   width: 100%;
-  height: 89vh;
+  height: 92.5vh;
   position: relative;
 }
+
 
 .tab-container {
   flex: 0 0 25%; /* flex-grow: 0, flex-shrink: 0, flex-basis: 25% */
@@ -139,4 +141,6 @@ const onSearchApt = (searchQuery) => {
   z-index: 5;
   margin: 0.7rem 0.7rem;
 }
+
+
 </style>
