@@ -62,7 +62,7 @@ const getDesc = (desc) => {
           <h1 class="title">퀴즈 풀기</h1>
           <p class="subtitle">퀴즈를 풀고 경험치를 획득해 보세요</p>
         </div>
-        <button 
+        <button
           v-if="userStore.role === '공인중개사'"
           @click="createQuiz"
           class="create-quiz-button"
@@ -71,16 +71,16 @@ const getDesc = (desc) => {
         </button>
       </div>
     </div>
-    
+
     <div class="quiz-content">
       <div class="sort-options">
-        <button 
+        <button
           :class="['sort-button', { active: sortOption === 'latest' }]"
           @click="sortQuizzes('latest')"
         >
           등록순
         </button>
-        <button 
+        <button
           :class="['sort-button', { active: sortOption === 'participation' }]"
           @click="sortQuizzes('participation')"
         >
@@ -92,22 +92,22 @@ const getDesc = (desc) => {
         <div v-for="quiz in quizzes" :key="quiz.quizId" class="quiz-card" :class="[{ 'quiz-card-solved': quiz.isSolve }]">
           <h2 class="quiz-title">{{ quiz.title }}</h2>
           <p class="quiz-description">{{ getDesc(quiz.desc) }}</p>
-          
+
           <div class="quiz-tags">
             <span class="tag">{{ quiz.tag1 }}</span>
             <span class="tag">{{ quiz.tag2 }}</span>
             <span class="tag">{{ quiz.tag3 }}</span>
           </div>
-          
+
           <div class="quiz-footer">
             <div class="author-info">
-              <img 
+              <img
 								:src="quiz.writer.profileImg === null ? '/src/assets/default-profile-img.png' : quiz.writer.profileImg"
-								class="author-image" 
+								class="author-image"
 							/>
               <span class="author-name">{{ quiz.writer.nickname }}</span>
             </div>
-            <button 
+            <button
               @click="startQuiz(quiz.quizId)"
               :class="['quiz-button', { 'completed': quiz.isSolve }]"
               :disabled="quiz.isSolve"
@@ -400,6 +400,18 @@ const getDesc = (desc) => {
   display: flex;
   flex-direction: column;
   box-shadow: 0 0 10px rgba(44, 132, 7, 0.316);
+  transition: all 0.3s ease;
+
+}
+
+.quiz-card:hover {
+  transform: translateY(-5px); /* 위로 살짝 떠오르는 효과 */
+  box-shadow:
+      0 0 1px rgb(153, 217, 135),    /* 전체적인 그림자 */
+      5px 0 10px rgba(153, 217, 135, 0.5),  /* 오른쪽 그림자 */
+      -5px 0 10px rgba(153, 217, 135, 0.5), /* 왼쪽 그림자 */
+      0 5px 10px rgba(153, 217, 135, 0.5),  /* 아래쪽 그림자 */
+      0 -5px 10px rgba(153, 217, 135, 0.5); /* 위쪽 그림자 */
 }
 
 .quiz-title {

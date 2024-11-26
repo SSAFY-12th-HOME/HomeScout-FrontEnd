@@ -259,6 +259,15 @@ const removeFromWishlist = () => {
   display: flex;
   flex-direction: column;
   box-shadow: 0 0 10px rgba(44, 132, 7, 0.316);
+  transition: all 0.3s ease;
+  cursor: pointer; /* 마우스 오버시 포인터 표시 */
+}
+
+.quiz-card:hover {
+  transform: translateY(-5px); /* 위로 살짝 떠오르는 효과 */
+  box-shadow: 0 3px 7px rgba(44, 132, 7, 0.4); /* 그림자 강화 */
+  background-color: #f8fff8; /* 배경색 살짝 변경 */
+  border-color: #2c8407; /* 테두리 색상 강조 */
 }
 
 .quiz-title {
