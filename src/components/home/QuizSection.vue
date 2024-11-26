@@ -19,7 +19,7 @@
         data-aos-duration="1000"
         data-aos-delay="100"
       >
-        <img src="/src/assets/quiz01.png" alt="Quiz preview" class="quiz-image" />
+        <img src="/src/assets/quizSection.png" alt="Quiz preview" class="quiz-image" />
       </div>
     </div>
 
@@ -33,7 +33,7 @@
           data-aos-duration="1000"
           data-aos-delay="500"
         >
-          <img src="/src/assets/quiz02.png" alt="Quiz card" class="quiz-card-image" />
+          <img src="/src/assets/quizSection02.png" alt="Quiz card" class="quiz-card-image" />
         </div>
 
         <!-- Right Badge and Profile Section -->
@@ -48,7 +48,7 @@
           </h3>
           <p class="badge-highlight">퀴즈 등록하고 스카우터 배지를 얻어보세요!</p>
           <div class="profile">
-            <img src="/src/assets/default-profile-img.png" alt="Profile" class="profile-image" />
+            <img src="/src/assets/mainProfile.png" alt="Profile" class="profile-image" />
             <div class="profile-text">
               <p>
                 질 좋은 퀴즈를 등록하고<br />유저들이 퀴즈를 풀 때마다<br />배지를 위한 경험치
@@ -142,13 +142,18 @@ onMounted(() => {
   display: flex;
   justify-content: center; /* Center align the image */
   max-width: 450px;
+
+
 }
+
+
 
 .quiz-image {
   width: 100%;
   max-width: 400px; /* Adjust image size */
   border-radius: 16px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 6px solid #66b56b;
 }
 
 /* Bottom Section */
@@ -182,7 +187,7 @@ onMounted(() => {
   max-width: 300px;
   border-radius: 16px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  background-color: #66b56b;
+  border: 6px solid #66b56b;
 }
 
 /* Badge Section */
@@ -227,7 +232,8 @@ onMounted(() => {
 .profile-image {
   width: 150px;
   height: 150px;
-  border-radius: 50%;
+  border-radius: 30%;
+  border: 6px solid #66b56b;
 }
 
 .profile-text {

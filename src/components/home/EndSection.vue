@@ -42,10 +42,14 @@
           data-aos-duration="1000"
           data-aos-delay="600"
         >
+
+          <RouterLink to="/login">
           <button class="start-button" @click="handleStart">
             <span class="button-text">시작하기</span>
             <span class="button-icon">→</span>
           </button>
+          </RouterLink>
+
         </div>
       </div>
     </div>
@@ -56,6 +60,7 @@
 import { onMounted, ref } from 'vue'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
+import { RouterLink } from 'vue-router'
 
 const isLoaded = ref(false)
 

@@ -78,14 +78,14 @@ const getPrice = (type, price, deposit, rentalFee) => {
           <h3 class="modal-title">나의 매물에서 삭제</h3>
           <p class="modal-message">내가 등록한 매물을 삭제하시겠습니까?</p>
           <div class="modal-buttons">
-            <button 
-              class="modal-button cancel-button" 
+            <button
+              class="modal-button cancel-button"
               @click="closeConfirmModal"
             >
               취소
             </button>
-            <button 
-              class="modal-button confirm-button" 
+            <button
+              class="modal-button confirm-button"
               @click="removeFromWishlist"
             >
               확인
@@ -104,8 +104,8 @@ const getPrice = (type, price, deposit, rentalFee) => {
       <div v-for="property in favorites" :key="property.saleId" class="property-card">
         <div class="property-header">
           <h4 class="apt-name">{{ property.aptNm }}</h4>
-          <Trash2 
-            class="heart-btn heart-active" 
+          <Trash2
+            class="heart-btn heart-active"
             @click="handleWishToggle(property.saleId)"
             size="40"
             stroke-width="2.25"
@@ -258,7 +258,7 @@ const getPrice = (type, price, deposit, rentalFee) => {
 }
 
 .heart-btn.heart-active {
-  color: #dc2626; /* 활성화됐을 때의 색상 */
+  color: #e04b4b; /* 활성화됐을 때의 색상 */
 }
 
 .info-row {

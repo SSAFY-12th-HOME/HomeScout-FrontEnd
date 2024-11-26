@@ -327,7 +327,7 @@ const removeFromWishlist = () => {
 }
 
 .heart-btn.heart-active {
-  color: #dc2626; /* 활성화됐을 때의 색상 */
+  color: #e04b4b; /* 활성화됐을 때의 색상 */
 }
 
 .quiz-card-solved {

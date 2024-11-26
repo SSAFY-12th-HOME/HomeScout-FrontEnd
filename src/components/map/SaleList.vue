@@ -523,7 +523,7 @@ const handleRegisterSuccess = () => {
   border: none;
   cursor: pointer;
   padding: 8px;
-  color: #dc2626; /* 기본 색상 */
+  color: #e04b4b; /* 기본 색상 */
   transition: all 0.2s ease;
 }
 
@@ -532,7 +532,7 @@ const handleRegisterSuccess = () => {
 }
 
 .heart-btn.heart-active {
-  color: #dc2626; /* 활성화됐을 때의 색상 */
+  color: #e04b4b; /* 활성화됐을 때의 색상 */
 }
 
 /* 모달 스타일 */
@@ -596,7 +596,7 @@ const handleRegisterSuccess = () => {
 }
 
 .confirm-button {
-  background-color: #dc2626;
+  background-color: #e04b4b;
   border: none;
   color: white;
 }
@@ -612,7 +612,7 @@ const handleRegisterSuccess = () => {
 }
 
 .success-icon {
-  color: #dc2626;
+  color: #e04b4b;
   margin-bottom: 16px;
   animation: pop 0.3s ease-out;
 }

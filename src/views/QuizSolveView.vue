@@ -6,8 +6,10 @@ import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import { Navigation, Pagination } from 'swiper/modules'
+
 import QuizPage from '@/components/quiz/QuizPage.vue'
 import QuizResult from '@/components/quiz/QuizResult/QuizResult.vue'
+
 import { getQuiz, solveQuiz } from '@/api/quiz'
 
 import { useRoute, useRouter } from 'vue-router'
@@ -109,8 +111,8 @@ const handleQuizList = () => {
           />
         </SwiperSlide>
         <SwiperSlide>
-          <QuizResult 
-            :total-questions="totalCount" 
+          <QuizResult
+            :total-questions="totalCount"
             :correct-answers="correctCount"
             :exp="exp"
             @restart="handleRestart"

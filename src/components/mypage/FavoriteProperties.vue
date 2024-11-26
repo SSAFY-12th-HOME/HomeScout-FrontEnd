@@ -77,14 +77,14 @@ const getPrice = (type, price, deposit, rentalFee) => {
           <h3 class="modal-title">관심 목록에서 삭제</h3>
           <p class="modal-message">관심 목록에서 삭제하시겠습니까?</p>
           <div class="modal-buttons">
-            <button 
-              class="modal-button cancel-button" 
+            <button
+              class="modal-button cancel-button"
               @click="closeConfirmModal"
             >
               취소
             </button>
-            <button 
-              class="modal-button confirm-button" 
+            <button
+              class="modal-button confirm-button"
               @click="removeFromWishlist"
             >
               확인
@@ -103,19 +103,19 @@ const getPrice = (type, price, deposit, rentalFee) => {
       <div v-for="property in favorites" :key="property.saleId" class="property-card">
         <div class="property-header">
           <h4 class="apt-name">{{ property.aptNm }}</h4>
-          <button 
-            class="heart-btn heart-active" 
+          <button
+            class="heart-btn heart-active"
             @click="handleWishToggle(property.saleId)"
           >
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              width="24" 
-              height="24" 
-              viewBox="0 0 24 24" 
-              :fill="'currentColor'" 
-              stroke="currentColor" 
-              stroke-width="2" 
-              stroke-linecap="round" 
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              :fill="'currentColor'"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
               stroke-linejoin="round"
             >
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"></path>
@@ -273,7 +273,7 @@ const getPrice = (type, price, deposit, rentalFee) => {
 }
 
 .heart-btn.heart-active {
-  color: #dc2626; /* 활성화됐을 때의 색상 */
+  color: #e04b4b; /* 활성화됐을 때의 색상 */
 }
 
 .info-row {

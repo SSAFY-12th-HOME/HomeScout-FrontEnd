@@ -103,7 +103,7 @@ const validateEmail = (email) => {
 const formatPhoneNumber = () => {
   let cleaned = modalPhone.value.replace(/\D/g, '')
   if (cleaned.length > 11) cleaned = cleaned.slice(0, 11)
-  
+
   if (cleaned.length >= 10) {
     modalPhone.value = cleaned.replace(/(\d{3})(\d{3,4})(\d{4})/, '$1-$2-$3')
   }
@@ -169,14 +169,14 @@ const isValid = computed(() => {
     <div v-if="isModalOpen" class="modal-overlay">
       <div class="modal-content">
         <h2 class="modal-title">비밀번호 찾기</h2>
-        
+
         <form @submit.prevent="handleSubmit" class="modal-form">
           <!-- 이메일 입력 -->
           <div class="form-group">
             <label>이메일</label>
-            <input 
+            <input
               v-model="modalEmail"
-              type="email" 
+              type="email"
               required
               placeholder="이메일을 입력하세요"
             >
@@ -186,9 +186,9 @@ const isValid = computed(() => {
           <!-- 전화번호 입력 -->
           <div class="form-group">
             <label>전화번호</label>
-            <input 
+            <input
               v-model="modalPhone"
-              type="tel" 
+              type="tel"
               required
               placeholder="전화번호를 입력하세요"
               @input="formatPhoneNumber"
@@ -201,14 +201,14 @@ const isValid = computed(() => {
 
           <!-- 버튼 그룹 -->
           <div class="button-group">
-            <button 
+            <button
               type="button"
               @click="closeModal"
               class="cancel-btn"
             >
               취소
             </button>
-            <button 
+            <button
               type="submit"
               class="submit-btn"
               :disabled="isLoading || !isValid"
@@ -386,13 +386,13 @@ h1 {
 }
 
 .field-error {
-  color: #dc2626;
+  color: #e04b4b;
   font-size: 14px;
   margin-top: 4px;
 }
 
 .error-message {
-  color: #dc2626;
+  color: #e04b4b;
   font-size: 14px;
   padding: 8px;
   background-color: #fee2e2;

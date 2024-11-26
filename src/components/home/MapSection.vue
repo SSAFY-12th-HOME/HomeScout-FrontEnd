@@ -15,10 +15,10 @@
       <!-- Right map images -->
       <div class="map-content" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="150">
         <div class="map-box map-vertical">
-          <img src="/src/assets/map01.png" alt="Map view 1" />
+          <img src="/src/assets/mapSection02.png" alt="Map view 1"/>
         </div>
         <div class="map-box map-horizontal">
-          <img src="/src/assets/map02.png" alt="Map view 2" />
+          <img src="/src/assets/mapSection01.png" alt="Map view 2" />
         </div>
       </div>
     </div>

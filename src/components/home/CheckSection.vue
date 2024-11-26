@@ -16,7 +16,7 @@
 
       <!-- Right Quiz Card -->
       <div class="quiz-card" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="100">
-        <img src="/src/assets/check01.png" alt="Illustration" class="quiz-card-image" />
+        <img src="/src/assets/checkSection.png" alt="Illustration" class="quiz-card-image" />
       </div>
     </div>
 
@@ -119,12 +119,19 @@ onMounted(() => {
 }
 
 .quiz-card-image {
-  max-width: 350px; /* Limit the size of the image */
+  max-width: 350px;
   width: 100%;
   height: auto;
   border-radius: 16px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), 0 5px 15px rgba(0, 0, 0, 0.2);
   background-color: white;
+  transition: all 0.3s ease;
+}
+
+
+.quiz-card-image:hover {
+  transform: translateY(-5px); /* 마우스 오버시 살짝 위로 떠오르는 효과 */
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4); /* 그림자 더 크고 진하게 */
 }
 
 /* Bottom Illustration */
@@ -141,6 +148,7 @@ onMounted(() => {
 .illustration-image {
   max-width: 800px; /* Larger size but within bounds */
   width: 100%;
-  height: auto;
+  height: 140%;
+  margin-bottom: 50px;
 }
 </style>
